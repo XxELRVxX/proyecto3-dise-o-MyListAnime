@@ -1,68 +1,137 @@
 import { useEffect, useState, useCallback } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { searchAnime, searchManga, getTopAnime, getTopManga, getAnimeGenres, getMangaGenres, normalizeEntry } from '../services/jikan'
-import AnimeCard from '../components/ui/AnimeCard'
-import { SkeletonList } from '../components/ui/Skeleton'
+import { useSearchParams, Link } from 'react-router-dom'
+import {
+  searchAnime, searchManga, getTopAnime, getTopManga,
+  getAnimeGenres, getMangaGenres, normalizeEntry
+} from '../services/jikan'
+import { useAuth } from '../context/AuthContext'
+import AddToListModal from '../components/modals/AddToListModal'
 
-const ANIME_TYPES = ['TV', 'Movie', 'OVA', 'ONA', 'Special', 'Music']
-const ANIME_STATUS = ['airing', 'complete', 'upcoming']
-const ANIME_RATINGS = ['g', 'pg', 'pg13', 'r17', 'r', 'rx']
+const ANIME_TYPES   = ['TV', 'Movie', 'OVA', 'ONA', 'Special']
+const MANGA_TYPES   = ['Manga', 'Novel', 'LightNovel', 'Manhwa', 'Manhua']
+const ANIME_STATUS  = ['airing', 'complete', 'upcoming']
+const MANGA_STATUS  = ['publishing', 'complete', 'hiatus', 'upcoming']
+const ORDER_ANIME   = ['popularity', 'score', 'rank', 'title', 'episodes']
+const ORDER_MANGA   = ['popularity', 'score', 'rank', 'title', 'chapters']
+const RATINGS       = ['g', 'pg', 'pg13', 'r17', 'r', 'rx']
 const RATING_LABELS = { g: 'G', pg: 'PG', pg13: 'PG-13', r17: 'R-17', r: 'R+', rx: 'Rx' }
-const MANGA_TYPES = ['Manga', 'Novel', 'LightNovel', 'Oneshot', 'Doujin', 'Manhwa', 'Manhua']
-const MANGA_STATUS = ['publishing', 'complete', 'hiatus', 'discontinued', 'upcoming']
-const ORDER_BY_ANIME = ['score', 'popularity', 'rank', 'title', 'start_date', 'episodes']
-const ORDER_BY_MANGA = ['score', 'popularity', 'rank', 'title', 'start_date', 'chapters']
+
+function PosterCard({ entry, onAdd, user }) {
+  return (
+    <div style={{ position: 'relative' }}
+      onMouseEnter={e => { const btn = e.currentTarget.querySelector('.hover-btn'); if (btn) btn.style.opacity = '1' }}
+      onMouseLeave={e => { const btn = e.currentTarget.querySelector('.hover-btn'); if (btn) btn.style.opacity = '0' }}
+    >
+      <Link to={`/${entry.type}/${entry.id}`} style={{ display: 'block' }}>
+        <div style={{
+          background: 'var(--surface)', border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-lg)', overflow: 'hidden', transition: 'all .25s',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(192,132,252,0.4)'; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.5)' }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '' }}
+        >
+          <div style={{ position: 'relative' }}>
+            <img src={entry.image} alt={entry.title}
+              style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', display: 'block' }}
+              onError={e => { e.target.src = 'https://placehold.co/160x213/1a1d2e/c084fc?text=?' }}
+              loading="lazy"
+            />
+            {entry.score && (
+              <div style={{
+                position: 'absolute', top: 8, right: 8,
+                background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(6px)',
+                border: '1px solid rgba(251,191,36,0.4)', borderRadius: 6,
+                padding: '3px 8px', fontFamily: 'var(--font-cond)',
+                fontSize: 13, fontWeight: 700, color: '#fbbf24',
+                display: 'flex', alignItems: 'center', gap: 4
+              }}>
+                <span className="material-symbols-outlined" style={{ fontSize: 12, fontVariationSettings: "'FILL' 1" }}>star</span>
+                {entry.score}
+              </div>
+            )}
+          </div>
+          <div style={{ padding: '10px 12px' }}>
+            <div style={{
+              fontFamily: 'var(--font-cond)', fontSize: 14, fontWeight: 700, color: 'var(--text)',
+              overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', marginBottom: 3
+            }}>{entry.title}</div>
+            <div style={{ fontSize: 12, color: 'var(--text-2)' }}>
+              {entry.genres?.slice(0, 2).join(', ')}
+            </div>
+          </div>
+        </div>
+      </Link>
+      {user && (
+        <button className="hover-btn" onClick={() => onAdd(entry)} style={{
+          position: 'absolute', top: 8, left: 8, opacity: 0, transition: 'opacity .2s',
+          background: 'var(--neon)', color: '#fff', border: 'none',
+          borderRadius: 6, width: 28, height: 28, display: 'flex',
+          alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+          boxShadow: '0 0 12px rgba(192,132,252,0.5)'
+        }}>
+          <span className="material-symbols-outlined" style={{ fontSize: 16 }}>add</span>
+        </button>
+      )}
+    </div>
+  )
+}
+
+function FilterChip({ label, active, onClick }) {
+  return (
+    <button onClick={onClick} style={{
+      padding: '4px 12px', borderRadius: 99,
+      fontFamily: 'var(--font-cond)', fontSize: 13, fontWeight: 600,
+      border: active ? '1px solid var(--neon)' : '1px solid var(--border-2)',
+      background: active ? 'rgba(192,132,252,0.15)' : 'var(--surface-2)',
+      color: active ? 'var(--neon)' : 'var(--text-2)',
+      cursor: 'pointer', transition: 'all .15s', textTransform: 'capitalize'
+    }}>
+      {label}
+    </button>
+  )
+}
 
 export default function Catalog() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const { user } = useAuth()
   const [mediaType, setMediaType] = useState(searchParams.get('media') || 'anime')
-  const [query, setQuery] = useState(searchParams.get('q') || '')
-  const [inputVal, setInputVal] = useState(searchParams.get('q') || '')
-  const [filters, setFilters] = useState({
-    type: '', status: '', genre: '', rating: '', order_by: 'popularity'
-  })
-  const [genres, setGenres] = useState([])
-  const [results, setResults] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [page, setPage] = useState(1)
-  const [hasMore, setHasMore] = useState(true)
-  const [filtersOpen, setFiltersOpen] = useState(false)
+  const [inputVal, setInputVal]   = useState(searchParams.get('q') || '')
+  const [query, setQuery]         = useState(searchParams.get('q') || '')
+  const [filters, setFilters]     = useState({ type: '', status: '', genre: '', rating: '', order_by: 'popularity' })
+  const [genres, setGenres]       = useState([])
+  const [results, setResults]     = useState([])
+  const [loading, setLoading]     = useState(false)
+  const [page, setPage]           = useState(1)
+  const [hasMore, setHasMore]     = useState(true)
+  const [filtersOpen, setFilters2]= useState(false)
+  const [modalEntry, setModal]    = useState(null)
 
-  // Load genres
   useEffect(() => {
-    const loadGenres = async () => {
+    const load = async () => {
       try {
         const data = mediaType === 'anime' ? await getAnimeGenres() : await getMangaGenres()
         setGenres(data.data || [])
       } catch { setGenres([]) }
     }
-    loadGenres()
+    load()
   }, [mediaType])
 
-  // Search
   const doSearch = useCallback(async (reset = false) => {
     setLoading(true)
-    const currentPage = reset ? 1 : page
+    const p = reset ? 1 : page
     if (reset) setPage(1)
     try {
       let data
       if (query.trim()) {
-        data = mediaType === 'anime'
-          ? await searchAnime(query, currentPage, filters)
-          : await searchManga(query, currentPage, filters)
+        data = mediaType === 'anime' ? await searchAnime(query, p, filters) : await searchManga(query, p, filters)
       } else {
-        data = mediaType === 'anime'
-          ? await getTopAnime(currentPage, filters.order_by || 'bypopularity')
-          : await getTopManga(currentPage, filters.order_by || 'bypopularity')
+        data = mediaType === 'anime' ? await getTopAnime(p, filters.order_by || 'bypopularity') : await getTopManga(p, filters.order_by || 'bypopularity')
       }
-      const normalized = (data.data || []).map(e => normalizeEntry(e, mediaType))
-      setResults(reset ? normalized : prev => [...prev, ...normalized])
+      const norm = (data.data || []).map(e => normalizeEntry(e, mediaType))
+      setResults(reset ? norm : prev => [...prev, ...norm])
       setHasMore(data.pagination?.has_next_page || false)
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
+    } catch (err) { console.error(err) }
+    finally { setLoading(false) }
   }, [query, mediaType, filters, page])
 
   useEffect(() => { doSearch(true) }, [query, mediaType, filters])
@@ -71,49 +140,41 @@ export default function Catalog() {
     e.preventDefault()
     setQuery(inputVal)
     setSearchParams(p => {
-      const next = new URLSearchParams(p)
-      if (inputVal.trim()) next.set('q', inputVal); else next.delete('q')
-      return next
+      const n = new URLSearchParams(p)
+      inputVal.trim() ? n.set('q', inputVal) : n.delete('q')
+      return n
     })
   }
-
-  const setFilter = (key, val) => {
-    setFilters(f => ({ ...f, [key]: f[key] === val ? '' : val }))
-  }
-
-  const loadMore = () => {
-    const next = page + 1
-    setPage(next)
-    doSearch(false)
-  }
-
-  const types = mediaType === 'anime' ? ANIME_TYPES : MANGA_TYPES
-  const statuses = mediaType === 'anime' ? ANIME_STATUS : MANGA_STATUS
-  const orderBys = mediaType === 'anime' ? ORDER_BY_ANIME : ORDER_BY_MANGA
-
-  const activeFiltersCount = Object.values(filters).filter(v => v && v !== 'popularity').length
+  const setFilter = (key, val) => setFilters(f => ({ ...f, [key]: f[key] === val ? '' : val }))
+  const types   = mediaType === 'anime' ? ANIME_TYPES : MANGA_TYPES
+  const statuses= mediaType === 'anime' ? ANIME_STATUS : MANGA_STATUS
+  const orders  = mediaType === 'anime' ? ORDER_ANIME : ORDER_MANGA
+  const activeCount = Object.values(filters).filter(v => v && v !== 'popularity').length
 
   return (
-    <div className="page-enter max-w-screen-xl mx-auto px-gutter py-6">
+    <div className="page-enter">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-headline-md font-headline-md text-on-surface mb-1">Catálogo</h1>
-        <p className="text-body-sm text-on-surface-variant">Explora miles de anime y manga con datos reales</p>
+      <div style={{ marginBottom: 28 }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 36, letterSpacing: 2, color: 'var(--text)', marginBottom: 4 }}>
+          CATÁLOGO
+        </h1>
+        <p style={{ color: 'var(--text-2)', fontSize: 14 }}>Explora miles de anime y manga con datos reales de MyAnimeList</p>
       </div>
 
-      {/* Media type toggle */}
-      <div className="flex gap-2 mb-6">
+      {/* Media type */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
         {['anime', 'manga'].map(t => (
-          <button
-            key={t}
-            onClick={() => { setMediaType(t); setResults([]); setPage(1) }}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm transition-all duration-200 capitalize
-              ${mediaType === t
-                ? 'bg-primary text-on-primary shadow-[0_0_15px_rgba(221,183,255,0.4)]'
-                : 'glass-card text-on-surface-variant hover:text-on-surface border border-outline-variant/30'
-              }`}
-          >
-            <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+          <button key={t} onClick={() => { setMediaType(t); setResults([]); setPage(1) }} style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '9px 22px', borderRadius: 99, cursor: 'pointer',
+            fontFamily: 'var(--font-cond)', fontSize: 15, fontWeight: 700,
+            letterSpacing: 0.5, textTransform: 'capitalize', transition: 'all .2s',
+            border: mediaType === t ? 'none' : '1px solid var(--border-2)',
+            background: mediaType === t ? 'var(--neon)' : 'var(--surface)',
+            color: mediaType === t ? '#fff' : 'var(--text-2)',
+            boxShadow: mediaType === t ? '0 0 20px rgba(192,132,252,0.4)' : 'none'
+          }}>
+            <span className="material-symbols-outlined" style={{ fontSize: 16, fontVariationSettings: "'FILL' 1" }}>
               {t === 'anime' ? 'movie' : 'auto_stories'}
             </span>
             {t}
@@ -121,173 +182,144 @@ export default function Catalog() {
         ))}
       </div>
 
-      {/* Search + Filter bar */}
-      <div className="flex gap-3 mb-4">
-        <form onSubmit={handleSearch} className="flex-1 flex gap-2">
-          <div className="relative flex-1">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
-            <input
-              value={inputVal}
-              onChange={e => setInputVal(e.target.value)}
-              placeholder={`Buscar ${mediaType}...`}
-              className="input-field pl-10 border border-outline-variant rounded-lg"
-            />
-          </div>
-          <button type="submit" className="btn-primary px-5">Buscar</button>
-        </form>
-
-        <button
-          onClick={() => setFiltersOpen(o => !o)}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all duration-200
-            ${filtersOpen || activeFiltersCount > 0
-              ? 'border-primary bg-primary/15 text-primary'
-              : 'glass-card border-outline-variant/30 text-on-surface-variant hover:text-on-surface'
-            }`}
-        >
-          <span className="material-symbols-outlined text-[18px]">tune</span>
+      {/* Search bar */}
+      <form onSubmit={handleSearch} style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
+        <div style={{
+          flex: 1, display: 'flex', alignItems: 'center', gap: 10,
+          background: 'var(--surface)', border: '1px solid var(--border-2)',
+          borderRadius: 'var(--radius-lg)', padding: '0 16px', height: 44
+        }}>
+          <span className="material-symbols-outlined" style={{ fontSize: 20, color: 'var(--text-3)' }}>search</span>
+          <input
+            value={inputVal} onChange={e => setInputVal(e.target.value)}
+            placeholder={`Buscar ${mediaType}...`}
+            style={{ flex: 1, background: 'none', border: 'none', outline: 'none', color: 'var(--text)', fontSize: 14 }}
+          />
+        </div>
+        <button type="submit" className="btn btn-primary" style={{ height: 44 }}>Buscar</button>
+        <button type="button" onClick={() => setFilters2(o => !o)} style={{
+          height: 44, padding: '0 18px', borderRadius: 'var(--radius)',
+          display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer',
+          fontFamily: 'var(--font-cond)', fontWeight: 700, fontSize: 14,
+          border: filtersOpen || activeCount > 0 ? '1px solid var(--neon)' : '1px solid var(--border-2)',
+          background: filtersOpen || activeCount > 0 ? 'rgba(192,132,252,0.1)' : 'var(--surface)',
+          color: filtersOpen || activeCount > 0 ? 'var(--neon)' : 'var(--text-2)',
+          transition: 'all .2s'
+        }}>
+          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>tune</span>
           Filtros
-          {activeFiltersCount > 0 && (
-            <span className="bg-primary text-on-primary text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
-              {activeFiltersCount}
-            </span>
+          {activeCount > 0 && (
+            <span style={{
+              background: 'var(--neon)', color: '#fff', borderRadius: 99,
+              fontSize: 11, fontWeight: 700, width: 18, height: 18,
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}>{activeCount}</span>
           )}
         </button>
-      </div>
+      </form>
 
-      {/* Filters panel */}
+      {/* Filter panel */}
       {filtersOpen && (
-        <div className="glass-card rounded-xl border border-outline-variant/30 p-5 mb-6 animate-slide-up">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div style={{
+          background: 'var(--surface)', border: '1px solid var(--border-2)',
+          borderRadius: 'var(--radius-lg)', padding: 20, marginBottom: 20
+        }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
             {/* Type */}
-            <FilterGroup label="Tipo" options={types} value={filters.type}
-              onChange={v => setFilter('type', v)} />
-
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-3)', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 }}>Tipo</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {types.map(t => <FilterChip key={t} label={t} active={filters.type === t} onClick={() => setFilter('type', t)} />)}
+              </div>
+            </div>
             {/* Status */}
-            <FilterGroup label="Estado" options={statuses} value={filters.status}
-              onChange={v => setFilter('status', v)}
-              labelMap={{ airing: 'En emisión', complete: 'Completado', upcoming: 'Próximamente', publishing: 'Publicando', hiatus: 'En pausa', discontinued: 'Descontinuado' }} />
-
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-3)', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 }}>Estado</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {statuses.map(s => <FilterChip key={s} label={s} active={filters.status === s} onClick={() => setFilter('status', s)} />)}
+              </div>
+            </div>
             {/* Genre */}
             <div>
-              <label className="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-2 block">Género</label>
-              <select
-                value={filters.genre}
-                onChange={e => setFilters(f => ({ ...f, genre: e.target.value }))}
-                className="input-field border border-outline-variant rounded text-sm"
-              >
+              <div style={{ fontSize: 11, color: 'var(--text-3)', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 }}>Género</div>
+              <select value={filters.genre} onChange={e => setFilters(f => ({ ...f, genre: e.target.value }))}
+                className="av-input" style={{ padding: '8px 12px', height: 36, fontSize: 13 }}>
                 <option value="">Todos</option>
-                {genres.map(g => (
-                  <option key={g.mal_id} value={g.mal_id}>{g.name}</option>
-                ))}
+                {genres.map(g => <option key={g.mal_id} value={g.mal_id}>{g.name}</option>)}
               </select>
             </div>
-
             {/* Order */}
             <div>
-              <label className="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-2 block">Ordenar por</label>
-              <select
-                value={filters.order_by}
-                onChange={e => setFilters(f => ({ ...f, order_by: e.target.value }))}
-                className="input-field border border-outline-variant rounded text-sm capitalize"
-              >
-                {orderBys.map(o => (
-                  <option key={o} value={o} className="capitalize">{o}</option>
-                ))}
+              <div style={{ fontSize: 11, color: 'var(--text-3)', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 }}>Ordenar por</div>
+              <select value={filters.order_by} onChange={e => setFilters(f => ({ ...f, order_by: e.target.value }))}
+                className="av-input" style={{ padding: '8px 12px', height: 36, fontSize: 13, textTransform: 'capitalize' }}>
+                {orders.map(o => <option key={o} value={o} style={{ textTransform: 'capitalize' }}>{o}</option>)}
               </select>
             </div>
           </div>
-
           {/* Rating (anime only) */}
           {mediaType === 'anime' && (
-            <div className="mt-4 pt-4 border-t border-outline-variant/20">
-              <label className="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-2 block">Clasificación</label>
-              <div className="flex flex-wrap gap-2">
-                {ANIME_RATINGS.map(r => (
-                  <button
-                    key={r}
-                    onClick={() => setFilter('rating', r)}
-                    className={`px-3 py-1 rounded-full text-xs font-bold border transition-all
-                      ${filters.rating === r ? 'bg-primary/15 border-primary text-primary' : 'border-outline-variant/30 text-on-surface-variant hover:border-outline'}`}
-                  >
-                    {RATING_LABELS[r]}
-                  </button>
-                ))}
+            <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
+              <div style={{ fontSize: 11, color: 'var(--text-3)', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 }}>Clasificación</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {RATINGS.map(r => <FilterChip key={r} label={RATING_LABELS[r]} active={filters.rating === r} onClick={() => setFilter('rating', r)} />)}
               </div>
             </div>
           )}
-
-          <button
-            onClick={() => setFilters({ type: '', status: '', genre: '', rating: '', order_by: 'popularity' })}
-            className="mt-4 text-xs text-on-surface-variant hover:text-tertiary transition-colors"
+          <button onClick={() => setFilters({ type: '', status: '', genre: '', rating: '', order_by: 'popularity' })}
+            style={{ marginTop: 14, fontSize: 12, color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer' }}
+            onMouseEnter={e => e.target.style.color = 'var(--neon-3)'}
+            onMouseLeave={e => e.target.style.color = 'var(--text-3)'}
           >
-            Limpiar filtros
+            ✕ Limpiar filtros
           </button>
         </div>
       )}
 
       {/* Results count */}
       {!loading && results.length > 0 && (
-        <p className="text-body-sm text-on-surface-variant mb-4">
+        <p style={{ fontSize: 13, color: 'var(--text-2)', marginBottom: 16 }}>
           {results.length} resultados {query ? `para "${query}"` : ''}
         </p>
       )}
 
       {/* Grid */}
       {loading && results.length === 0 ? (
-        <SkeletonList count={24} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 16 }}>
+          {Array.from({ length: 24 }, (_, i) => (
+            <div key={i} className="skeleton" style={{ aspectRatio: '3/4', borderRadius: 'var(--radius-lg)' }} />
+          ))}
+        </div>
       ) : results.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-center">
-          <span className="material-symbols-outlined text-[64px] text-outline mb-4">search_off</span>
-          <p className="text-headline-sm text-on-surface-variant">No se encontraron resultados</p>
-          <p className="text-body-sm text-outline mt-2">Intenta con otros términos o ajusta los filtros</p>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingBlock: 80, textAlign: 'center', gap: 12 }}>
+          <span className="material-symbols-outlined" style={{ fontSize: 64, color: 'var(--text-3)' }}>search_off</span>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: 24, color: 'var(--text-2)', letterSpacing: 1 }}>SIN RESULTADOS</p>
+          <p style={{ fontSize: 14, color: 'var(--text-3)' }}>Intenta con otros términos o ajusta los filtros</p>
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 16 }}>
             {results.map(entry => (
-              <AnimeCard key={`${entry.type}_${entry.id}`} entry={entry} />
+              <PosterCard key={`${entry.type}_${entry.id}`} entry={entry} user={user} onAdd={setModal} />
             ))}
           </div>
-
-          {/* Load more */}
           {hasMore && (
-            <div className="flex justify-center mt-10">
-              <button
-                onClick={loadMore}
-                disabled={loading}
-                className="btn-secondary flex items-center gap-2 disabled:opacity-50"
-              >
-                {loading ? (
-                  <div className="w-4 h-4 border-2 border-secondary/30 border-t-secondary rounded-full animate-spin" />
-                ) : (
-                  <span className="material-symbols-outlined text-[18px]">expand_more</span>
-                )}
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 36 }}>
+              <button onClick={() => { setPage(p => p + 1); doSearch(false) }}
+                disabled={loading} className="btn btn-ghost">
+                {loading
+                  ? <div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.2)', borderTopColor: 'var(--neon)', borderRadius: '50%', animation: 'spin .8s linear infinite' }} />
+                  : <span className="material-symbols-outlined" style={{ fontSize: 18 }}>expand_more</span>
+                }
                 Cargar más
               </button>
             </div>
           )}
         </>
       )}
-    </div>
-  )
-}
 
-function FilterGroup({ label, options, value, onChange, labelMap = {} }) {
-  return (
-    <div>
-      <label className="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-2 block">{label}</label>
-      <div className="flex flex-wrap gap-1.5">
-        {options.map(opt => (
-          <button
-            key={opt}
-            onClick={() => onChange(opt)}
-            className={`px-2.5 py-1 rounded text-xs font-medium border transition-all capitalize
-              ${value === opt ? 'bg-primary/15 border-primary text-primary' : 'border-outline-variant/30 text-on-surface-variant hover:border-outline'}`}
-          >
-            {labelMap[opt] || opt}
-          </button>
-        ))}
-      </div>
+      {modalEntry && <AddToListModal entry={modalEntry} onClose={() => setModal(null)} />}
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   )
 }

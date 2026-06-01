@@ -6,33 +6,26 @@ export default function Login() {
   const { user, loginWithGoogle, loading } = useAuth()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    if (user) navigate('/')
-  }, [user])
+  useEffect(() => { if (user) navigate('/') }, [user])
 
   const handleGoogleLogin = async () => {
-    try {
-      await loginWithGoogle()
-      navigate('/')
-    } catch (err) {
-      console.error(err)
-    }
+    try { await loginWithGoogle(); navigate('/') }
+    catch (err) { console.error(err) }
   }
 
   return (
     <div className="page-enter min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background decorations */}
+      {/* Glows */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-[100px] animate-float" />
-        <div className="absolute bottom-1/3 right-1/4 w-48 h-48 bg-secondary/10 rounded-full blur-[80px] animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 right-1/3 w-32 h-32 bg-tertiary/8 rounded-full blur-[60px] animate-float" style={{ animationDelay: '4s' }} />
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 rounded-full opacity-20 blur-[80px] bg-primary" />
+        <div className="absolute bottom-1/4 right-1/4 w-56 h-56 rounded-full opacity-15 blur-[60px] bg-secondary" />
       </div>
 
       <div className="w-full max-w-sm relative z-10">
         {/* Logo */}
         <div className="text-center mb-10">
           <Link to="/" className="inline-flex flex-col items-center gap-3">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-container to-secondary flex items-center justify-center text-xl font-black text-on-primary shadow-[0_0_30px_rgba(183,109,255,0.5)] animate-[glow-pulse_2s_ease-in-out_infinite_alternate]">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-container to-secondary flex items-center justify-center text-xl font-black text-on-primary neon-glow-purple">
               MLA
             </div>
             <h1 className="text-2xl font-black text-primary tracking-tight italic">MyListAnime</h1>
@@ -41,19 +34,17 @@ export default function Login() {
         </div>
 
         {/* Card */}
-        <div className="glass-card rounded-2xl border border-primary/15 p-8 shadow-[0_0_60px_rgba(221,183,255,0.08)]">
-          <h2 className="text-headline-sm font-headline-sm text-on-surface text-center mb-2">
-            Bienvenido
-          </h2>
-          <p className="text-body-sm text-on-surface-variant text-center mb-8">
+        <div className="glass-card rounded-2xl border border-primary/15 p-8">
+          <h2 className="text-headline-sm font-bold text-on-surface text-center mb-2">Bienvenido</h2>
+          <p className="text-body-sm text-on-surface-variant text-center mb-8 leading-relaxed">
             Inicia sesión para guardar tu lista, calificar y reseñar anime y manga
           </p>
 
-          {/* Google button */}
+          {/* Google */}
           <button
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 py-3.5 rounded-lg border border-outline-variant/40 bg-surface-container-high/50 hover:bg-surface-container-highest/70 hover:border-primary/30 hover:shadow-[0_0_20px_rgba(221,183,255,0.15)] text-on-surface font-semibold text-sm transition-all duration-300 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 py-3.5 rounded-lg border border-outline-variant/40 bg-surface-container-high/50 hover:bg-surface-container-highest/70 hover:border-primary/30 text-on-surface font-semibold text-sm transition-all duration-300 active:scale-95 disabled:opacity-60"
           >
             {loading ? (
               <div className="w-5 h-5 border-2 border-on-surface/30 border-t-on-surface rounded-full animate-spin" />
@@ -70,33 +61,20 @@ export default function Login() {
 
           <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px bg-outline-variant/30" />
-            <span className="text-xs text-on-surface-variant">próximamente</span>
+            <span className="text-xs text-outline tracking-wider">próximamente</span>
             <div className="flex-1 h-px bg-outline-variant/30" />
           </div>
 
-          {/* Email (disabled - future) */}
           <div className="space-y-3 opacity-40 pointer-events-none">
-            <input
-              type="email"
-              placeholder="correo@ejemplo.com"
-              className="input-field border border-outline-variant rounded"
-              disabled
-            />
-            <input
-              type="password"
-              placeholder="Contraseña"
-              className="input-field border border-outline-variant rounded"
-              disabled
-            />
-            <button className="btn-primary w-full opacity-50" disabled>
-              Iniciar sesión
-            </button>
+            <input type="email" placeholder="correo@ejemplo.com" className="input-field border border-outline-variant rounded" disabled />
+            <input type="password" placeholder="Contraseña" className="input-field border border-outline-variant rounded" disabled />
+            <button className="btn-primary w-full opacity-50" disabled>Iniciar sesión</button>
           </div>
-          <p className="text-center text-xs text-on-surface-variant mt-4">Login con email próximamente</p>
+          <p className="text-center text-xs text-outline mt-4">Login con email próximamente</p>
         </div>
 
-        <p className="text-center text-xs text-on-surface-variant mt-6">
-          Al continuar, aceptas que tus datos se guarden de forma segura en Firebase
+        <p className="text-center text-xs text-outline mt-6 leading-relaxed">
+          Al continuar, tus datos se guardan de forma segura en Firebase
         </p>
       </div>
     </div>
