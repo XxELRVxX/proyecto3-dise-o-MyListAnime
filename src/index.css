@@ -409,3 +409,88 @@ h1, h2, h3, .title { font-family: var(--font-title); letter-spacing: 0.04em; }
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
+
+
+/* ══════════════════════════════════════════════
+   LOGIN PAGE — animaciones específicas
+══════════════════════════════════════════════ */
+
+/* Fondo de la transición de login */
+.login-transition-bg {
+  background: radial-gradient(ellipse at center, #1a0a36 0%, #0b1326 60%);
+  animation: transition-bg-pulse 2.2s ease-out forwards;
+}
+
+/* Glitch del logo en el panel de login */
+.login-glitch {
+  animation: glitch-box 0.6s steps(2) forwards;
+}
+.login-glitch-text {
+  animation: glitch-text 0.6s steps(2) forwards;
+}
+
+/* Partículas flotantes del panel izquierdo */
+.animate-float-particle {
+  animation: float-particle var(--dur, 3s) ease-in-out infinite;
+}
+
+/* ── Keyframes nuevos ──────────────────────────────── */
+
+@keyframes transition-bg-pulse {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0px)   rotate(0deg);   }
+  33%       { transform: translateY(-18px) rotate(8deg);   }
+  66%       { transform: translateY(-8px)  rotate(-5deg);  }
+}
+
+@keyframes glitch-box {
+  0%   { transform: translate(0, 0);    filter: hue-rotate(0deg); }
+  20%  { transform: translate(-4px, 2px); filter: hue-rotate(90deg); }
+  40%  { transform: translate(4px, -2px); filter: hue-rotate(180deg); }
+  60%  { transform: translate(-2px, 4px); filter: hue-rotate(270deg); }
+  80%  { transform: translate(2px, -4px); filter: hue-rotate(90deg); }
+  100% { transform: translate(0, 0);    filter: hue-rotate(0deg); }
+}
+
+@keyframes glitch-text {
+  0%   { text-shadow: 0 0 16px rgba(221,183,255,0.6); clip-path: none; }
+  25%  { text-shadow: -3px 0 #5de6ff, 3px 0 #ffb2b7, 0 0 16px rgba(221,183,255,0.6); }
+  50%  { text-shadow:  3px 0 #5de6ff, -3px 0 #ffb2b7, 0 0 16px rgba(221,183,255,0.6); }
+  75%  { text-shadow: -2px 0 #ddb7ff, 2px 0 #5de6ff,  0 0 16px rgba(221,183,255,0.6); }
+  100% { text-shadow: 0 0 16px rgba(221,183,255,0.6); }
+}
+
+@keyframes burst-radial {
+  0%   { background: radial-gradient(circle at center, rgba(183,109,255,0.0) 0%, transparent 50%); }
+  30%  { background: radial-gradient(circle at center, rgba(183,109,255,0.5) 0%, rgba(93,230,255,0.2) 40%, transparent 70%); }
+  70%  { background: radial-gradient(circle at center, rgba(183,109,255,0.3) 0%, rgba(93,230,255,0.1) 40%, transparent 70%); }
+  100% { background: radial-gradient(circle at center, rgba(183,109,255,0.0) 0%, transparent 50%); }
+}
+.animate-burst-radial { animation: burst-radial 2.2s ease-out forwards; }
+
+@keyframes shockwave {
+  0%   { transform: scale(0.3); opacity: 0.9; }
+  100% { transform: scale(6);   opacity: 0; }
+}
+.animate-shockwave { animation: shockwave 1.2s ease-out forwards; }
+
+@keyframes login-pop {
+  0%   { transform: scale(0.5) translateY(20px); opacity: 0; }
+  50%  { transform: scale(1.08) translateY(-4px); opacity: 1; }
+  100% { transform: scale(1)   translateY(0);    opacity: 1; }
+}
+.animate-login-pop { animation: login-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both; }
+
+@keyframes petal-fall {
+  0%   { transform: translateY(-2rem) rotate(0deg);   opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateY(110vh)  rotate(360deg); opacity: 0; }
+}
+.animate-petal-fall { animation: petal-fall var(--dur, 1.6s) ease-in forwards; }
+
