@@ -70,7 +70,9 @@ body {
   color: var(--color-on-surface);
   min-height: 100dvh;
   transition: background-color 0.4s ease, color 0.4s ease;
-  cursor: none; /* cursor personalizado activo */
+  *, *::before, *::after {
+    cursor: none !important;
+  }
 }
 
 img { display: block; }
@@ -310,7 +312,7 @@ h1, h2, h3, .title { font-family: var(--font-title); letter-spacing: 0.04em; }
     color: var(--color-primary);
   }
 
-  /* ── Skeleton ── */
+  /* ── Skeleton (legacy) ── */
   .skeleton {
     background: linear-gradient(90deg,
       rgba(45,52,73,0.8) 25%,
@@ -327,6 +329,59 @@ h1, h2, h3, .title { font-family: var(--font-title); letter-spacing: 0.04em; }
       rgba(196,174,232,0.6) 75%
     );
     background-size: 200% 100%;
+  }
+
+  /* ── Skeleton shimmer mejorado ── */
+  .skeleton-shimmer {
+    position: relative;
+    overflow: hidden;
+    background: rgba(45,52,73,0.7);
+  }
+  .skeleton-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(221,183,255,0.07) 40%,
+      rgba(93,230,255,0.10) 50%,
+      rgba(221,183,255,0.07) 60%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+  .light .skeleton-shimmer { background: rgba(196,174,232,0.35); }
+  .light .skeleton-shimmer::after {
+    background: linear-gradient(90deg,
+      transparent 0%, rgba(109,40,217,0.08) 50%, transparent 100%
+    );
+    background-size: 200% 100%;
+  }
+
+  /* ── Content filter toggle ── */
+  .filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 99px;
+    border: 1px solid;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: none;
+    transition: all 0.2s;
+    font-family: var(--font-body);
+  }
+  .filter-toggle.active {
+    border-color: rgba(93,230,255,0.5);
+    background: rgba(93,230,255,0.1);
+    color: #5de6ff;
+  }
+  .filter-toggle.inactive {
+    border-color: rgba(255,178,183,0.4);
+    background: rgba(255,178,183,0.08);
+    color: #ffb2b7;
   }
 
   /* ── Página entrada ── */
@@ -525,4 +580,19 @@ h1, h2, h3, .title { font-family: var(--font-title); letter-spacing: 0.04em; }
 }
 .animate-hero-progress {
   animation: hero-progress 6s linear forwards;
+}
+/* spin para loaders inline */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes card-cascade-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.93);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
