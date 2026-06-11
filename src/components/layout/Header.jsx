@@ -8,10 +8,10 @@ import { useTheme } from '../../context/ThemeContext'
 
 // enlaces de navegacion de escritorio: se mantienen sincronizados con las rutas de App.jsx
 const NAV_LINKS = [
-  { to: '/',         label: 'Inicio'    },
-  { to: '/catalog',  label: 'Catálogo'  },
+  { to: '/',         label: 'Home'    },
+  { to: '/catalog',  label: 'Catalog'  },
   { to: '/rankings', label: 'Rankings'  },
-  { to: '/my-list',  label: 'Mi Lista'  },
+  { to: '/my-list',  label: 'My List'  },
 ]
 
 export default function Header() {
@@ -92,8 +92,8 @@ export default function Header() {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Buscar anime, manga..."
-            aria-label="Buscar"
+            placeholder="Search anime, manga..."
+            aria-label="Search"
             className="input-field pl-9 pr-4 py-2 text-body-sm w-56 lg:w-72 rounded-full"
           />
         </form>
@@ -102,7 +102,7 @@ export default function Header() {
         <button
           className="md:hidden btn-ghost p-2"
           onClick={() => setSearchOpen(true)}
-          aria-label="Abrir búsqueda"
+          aria-label="Open search"
         >
           <span className="material-symbols-outlined text-[22px]">search</span>
         </button>
@@ -111,8 +111,8 @@ export default function Header() {
         <button
           onClick={toggleTheme}
           className="btn-ghost p-2 shrink-0"
-          aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-          title={isDark ? 'Modo claro' : 'Modo oscuro'}
+          aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={isDark ? 'Light mode' : 'Dark mode'}
         >
           <span className="material-symbols-outlined text-[22px]">
             {isDark ? 'light_mode' : 'dark_mode'}
@@ -125,7 +125,7 @@ export default function Header() {
           className="shrink-0 w-9 h-9 rounded-full border-2 border-primary/30 bg-surface-container-high
                      flex items-center justify-center overflow-hidden
                      hover:border-primary/60 transition-colors"
-          aria-label="Ir al perfil"
+          aria-label="Go to profile"
         >
           <span className="material-symbols-outlined text-outline text-[20px]">person</span>
         </Link>
@@ -148,14 +148,14 @@ export default function Header() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar anime, manga..."
+              placeholder="Search anime, manga..."
               className="flex-1 bg-transparent outline-none text-body-md text-on-surface placeholder:text-outline"
             />
             <button
               type="button"
               onClick={() => setSearchOpen(false)}
               className="btn-ghost p-1"
-              aria-label="Cerrar búsqueda"
+              aria-label="Close search"
             >
               <span className="material-symbols-outlined text-[20px]">close</span>
             </button>

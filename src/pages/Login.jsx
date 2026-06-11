@@ -69,10 +69,10 @@ function LoginTransition({ onDone }) {
           style={{ fontFamily: 'Bangers, cursive', letterSpacing: '0.12em',
                    textShadow: '0 0 24px rgba(221,183,255,0.9), 0 0 48px rgba(221,183,255,0.5)' }}
         >
-          ¡Bienvenido!
+          Welcome!
         </p>
         <p className="text-secondary text-sm mt-2 font-semibold tracking-widest uppercase">
-          Entrando a tu universo…
+          Entering your universe…
         </p>
       </div>
 
@@ -294,7 +294,7 @@ export default function Login() {
               </Link>
               <p className="text-on-surface-variant text-sm mt-2 font-regular"
                  style={{ fontFamily: 'Inter, sans-serif' }}>
-                Tu colección. Tu universo.
+                Your collection. Your world.
               </p>
             </div>
 
@@ -304,11 +304,11 @@ export default function Login() {
                 className="text-2xl font-black text-on-surface text-center mb-1"
                 style={{ fontFamily: 'Bangers, cursive', letterSpacing: '0.06em' }}
               >
-                Bienvenido
+                Welcome
               </h2>
               <p className="text-body-sm text-on-surface-variant text-center mb-8 leading-relaxed"
                  style={{ fontFamily: 'Inter, sans-serif' }}>
-                Inicia sesión para guardar tu lista, calificar y reseñar anime y manga
+                Sign in to save your list, rate and review anime and manga
               </p>
 
               {/* Google button */}
@@ -343,7 +343,7 @@ export default function Login() {
               <div className="flex items-center gap-3 my-6">
                 <div className="flex-1 h-px bg-outline-variant/30" />
                 <span className="text-xs text-outline tracking-wider" style={{ fontFamily: 'Inter, sans-serif' }}>
-                  próximamente
+                  coming soon
                 </span>
                 <div className="flex-1 h-px bg-outline-variant/30" />
               </div>
@@ -356,12 +356,12 @@ export default function Login() {
               </div>
 
               <p className="text-center text-xs text-outline mt-4" style={{ fontFamily: 'Inter, sans-serif' }}>
-                Login con email próximamente
+                Login with email coming soon
               </p>
             </div>
 
             <p className="text-center text-xs text-outline mt-6 leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
-              Al continuar, tus datos se guardan de forma segura en Firebase
+              By continuing, your data is saved securely in Firebase
             </p>
           </div>
         </div>
@@ -372,11 +372,11 @@ export default function Login() {
 
 // ── Animated tagline — cycles through anime-themed phrases ────────────────────
 const TAGLINES = [
-  'Tu colección. Tu universo.',
-  'Más de 18,000 animes esperan.',
-  'Organiza. Califica. Descubre.',
-  'El tracking definitivo para otakus.',
-  'Shonen, Shojo, Isekai… todo aquí.',
+  'Your collection. Your world.',
+  'More than 18,000 anime waiting.',
+  'Organize. Rate. Discover.',
+  'The definitive tracking for otakus.',
+  'Shonen, Shojo, Isekai… all here.',
 ]
 
 function AnimatedTagline() {

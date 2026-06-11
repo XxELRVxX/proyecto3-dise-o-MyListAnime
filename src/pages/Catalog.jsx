@@ -273,12 +273,12 @@ export default function Catalog() {
       let data
       const hasActiveFilters = filters.type || filters.status || filters.genre || filters.rating
       if (query.trim()) {
-        // búsqueda con texto — pasar todos los filtros
+        // busqueda de texto con filtros
         data = mediaType === 'anime'
           ? await searchAnime(query, p, filters)
           : await searchManga(query, p, filters)
       } else if (hasActiveFilters || (filters.order_by && filters.order_by !== 'popularity')) {
-        // sin texto pero con filtros — usar browse que soporta todos los params
+        // sin texto pero con filtros
         data = mediaType === 'anime'
           ? await browseAnime(p, filters)
           : await browseManga(p, filters)
@@ -337,10 +337,10 @@ export default function Catalog() {
             fontFamily: 'Bangers, cursive', fontSize: 'clamp(2.4rem, 5vw, 3.2rem)', letterSpacing: '0.06em',
             background: 'linear-gradient(90deg, #ddb7ff 0%, #5de6ff 60%, #ffb2b7 100%)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: 4,
-          }}>Catálogo</h1>
+          }}>Catalog</h1>
           </div>
           <p style={{ fontSize: 13, color: 'var(--color-on-surface-variant)', fontFamily: 'Inter, sans-serif' }}>
-            Explora miles de anime y manga con datos reales de MyAnimeList
+            Explore thousands of anime and manga titles with real-time data from MyAnimeList
           </p>
         </div>
 
@@ -362,7 +362,7 @@ export default function Catalog() {
           </div>
           <button onClick={toggleFilter} className={`filter-toggle ${filterEnabled ? 'active' : 'inactive'}`}>
             <span className="material-symbols-outlined" style={{ fontSize: 15, fontVariationSettings: "'FILL' 1" }}>{filterEnabled ? 'shield' : 'no_adult_content'}</span>
-            {filterEnabled ? 'Filtro activo' : 'Todo el contenido'}
+            {filterEnabled ? 'Active Filter' : 'All Content'}
           </button>
         </div>
 
@@ -370,13 +370,13 @@ export default function Catalog() {
           <form onSubmit={handleSearch} style={{ flex: 1, display: 'flex', gap: 8 }}>
             <div style={{ flex: 1, position: 'relative' }}>
               <span className="material-symbols-outlined" style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', fontSize: 18, color: 'var(--color-on-surface-variant)', pointerEvents: 'none' }}>search</span>
-              <input value={inputVal} onChange={e => setInputVal(e.target.value)} placeholder={`Buscar ${mediaType}...`}
+              <input value={inputVal} onChange={e => setInputVal(e.target.value)} placeholder={`Search ${mediaType}...`}
                 style={{ width: '100%', padding: '11px 12px 11px 40px', background: 'var(--color-input-bg)', border: '1px solid rgba(77,67,84,0.6)', borderRadius: 12, fontSize: 14, color: 'var(--color-on-surface)', fontFamily: 'Inter, sans-serif', outline: 'none', transition: 'border-color .2s, box-shadow .2s' }}
                 onFocus={e => { e.target.style.borderColor = 'rgba(221,183,255,0.5)'; e.target.style.boxShadow = '0 0 16px rgba(221,183,255,0.1)' }}
                 onBlur={e => { e.target.style.borderColor = 'var(--color-card-border)'; e.target.style.boxShadow = 'none' }}
               />
             </div>
-            <button type="submit" style={{ padding: '11px 22px', borderRadius: 12, background: 'linear-gradient(135deg, #ddb7ff, #b76dff)', color: '#490080', border: 'none', fontWeight: 700, fontSize: 13, fontFamily: 'Orbitron, sans-serif', boxShadow: '0 0 18px rgba(221,183,255,0.35)' }}>Buscar</button>
+            <button type="submit" style={{ padding: '11px 22px', borderRadius: 12, background: 'linear-gradient(135deg, #ddb7ff, #b76dff)', color: '#490080', border: 'none', fontWeight: 700, fontSize: 13, fontFamily: 'Orbitron, sans-serif', boxShadow: '0 0 18px rgba(221,183,255,0.35)' }}>Search</button>
           </form>
           <button onClick={() => setFiltersOpen(o => !o)} style={{
             display: 'flex', alignItems: 'center', gap: 6, padding: '11px 16px', borderRadius: 12, fontSize: 13, fontWeight: 600, fontFamily: 'Orbitron, sans-serif', transition: 'all .2s',
@@ -385,7 +385,7 @@ export default function Catalog() {
             color: filtersOpen || activeFiltersCount > 0 ? '#ddb7ff' : 'var(--color-on-surface-variant)',
           }}>
             <span className="material-symbols-outlined" style={{ fontSize: 17 }}>tune</span>
-            Filtros
+            Filters
             {activeFiltersCount > 0 && <span style={{ background: '#ddb7ff', color: '#490080', fontSize: 10, fontWeight: 900, width: 17, height: 17, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{activeFiltersCount}</span>}
           </button>
         </div>
@@ -393,21 +393,21 @@ export default function Catalog() {
         {filtersOpen && (
           <div className="animate-slide-up" style={{ background: 'var(--c-filter-bg)', backdropFilter: 'blur(12px)', border: '1px solid rgba(221,183,255,0.15)', borderRadius: 16, padding: '18px 20px', marginBottom: 20, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16 }}>
-              {[{ label: 'Tipo', options: mediaType === 'anime' ? ANIME_TYPES : MANGA_TYPES, key: 'type' }, { label: 'Estado', options: mediaType === 'anime' ? ANIME_STATUS : MANGA_STATUS, key: 'status' }].map(({ label, options, key }) => (
+              {[{ label: 'Type', options: mediaType === 'anime' ? ANIME_TYPES : MANGA_TYPES, key: 'type' }, { label: 'Status', options: mediaType === 'anime' ? ANIME_STATUS : MANGA_STATUS, key: 'status' }].map(({ label, options, key }) => (
                 <div key={key}>
                   <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(221,183,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8, fontFamily: 'Orbitron, sans-serif' }}>{label}</div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>{options.map(o => <FilterChip key={o} label={o} active={filters[key] === o} onClick={() => setFilter(key, o)} />)}</div>
                 </div>
               ))}
               <div>
-                <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(221,183,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8, fontFamily: 'Orbitron, sans-serif' }}>Género</div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(221,183,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8, fontFamily: 'Orbitron, sans-serif' }}>Genre</div>
                 <select value={filters.genre} onChange={e => setFilters(f => ({ ...f, genre: e.target.value }))} style={{ width: '100%', padding: '7px 10px', background: 'var(--color-card-bg)', border: '1px solid rgba(77,67,84,0.6)', borderRadius: 8, fontSize: 13, color: 'var(--color-on-surface)', fontFamily: 'Inter, sans-serif', outline: 'none' }}>
-                  <option value="">Todos</option>
+                  <option value="">All</option>
                   {[...new Map(genres.map(g => [g.mal_id, g])).values()].map(g => <option key={g.mal_id} value={g.mal_id}>{g.name}</option>)}
                 </select>
               </div>
               <div>
-                <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(221,183,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8, fontFamily: 'Orbitron, sans-serif' }}>Ordenar</div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(221,183,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8, fontFamily: 'Orbitron, sans-serif' }}>Sort</div>
                 <select value={filters.order_by} onChange={e => setFilters(f => ({ ...f, order_by: e.target.value }))} style={{ width: '100%', padding: '7px 10px', background: 'var(--color-card-bg)', border: '1px solid rgba(77,67,84,0.6)', borderRadius: 8, fontSize: 13, color: 'var(--color-on-surface)', fontFamily: 'Inter, sans-serif', outline: 'none' }}>
                   {(mediaType === 'anime' ? ORDER_ANIME : ORDER_MANGA).map(o => <option key={o} value={o}>{o}</option>)}
                 </select>
@@ -415,19 +415,19 @@ export default function Catalog() {
             </div>
             {mediaType === 'anime' && (
               <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid rgba(77,67,84,0.3)' }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(221,183,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8, fontFamily: 'Orbitron, sans-serif' }}>Clasificación {filterEnabled && <span style={{ color: '#5de6ff' }}> · Rx oculto</span>}</div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(221,183,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8, fontFamily: 'Orbitron, sans-serif' }}>Classification {filterEnabled && <span style={{ color: '#5de6ff' }}> · Hidden Rx</span>}</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>{ratings.map(r => <FilterChip key={r} label={RATING_LABELS[r]} active={filters.rating === r} onClick={() => setFilter('rating', r)} color={r === 'rx' ? '#ffb2b7' : undefined} />)}</div>
               </div>
             )}
-            <button onClick={() => setFilters({ type: '', status: '', genre: '', rating: '', order_by: 'popularity' })} style={{ marginTop: 12, fontSize: 11, color: 'rgba(221,183,255,0.5)', background: 'none', border: 'none', fontFamily: 'Inter, sans-serif', textDecoration: 'underline' }}>Limpiar filtros</button>
+            <button onClick={() => setFilters({ type: '', status: '', genre: '', rating: '', order_by: 'popularity' })} style={{ marginTop: 12, fontSize: 11, color: 'rgba(221,183,255,0.5)', background: 'none', border: 'none', fontFamily: 'Inter, sans-serif', textDecoration: 'underline' }}>Clear Filters</button>
           </div>
         )}
 
         {!loading && results.length > 0 && (
           <p style={{ fontSize: 12, color: 'var(--color-on-surface-variant)', marginBottom: 14, fontFamily: 'Inter, sans-serif' }}>
-            <span style={{ color: '#ddb7ff', fontWeight: 700 }}>{results.length}</span> resultados
-            {query ? <span> para "<span style={{ color: '#5de6ff' }}>{query}</span>"</span> : ''}
-            {filterEnabled && <span style={{ color: '#5de6ff', marginLeft: 8 }}>· Filtro activo</span>}
+            <span style={{ color: '#ddb7ff', fontWeight: 700 }}>{results.length}</span> results
+            {query ? <span> for "<span style={{ color: '#5de6ff' }}>{query}</span>"</span> : ''}
+            {filterEnabled && <span style={{ color: '#5de6ff', marginLeft: 8 }}>· Active Filter</span>}
           </p>
         )}
 
@@ -436,8 +436,8 @@ export default function Catalog() {
         : results.length === 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '80px 0', textAlign: 'center', gap: 10 }}>
             <span className="material-symbols-outlined" style={{ fontSize: 56, color: 'var(--color-outline)' }}>search_off</span>
-            <p style={{ fontFamily: 'Bangers, cursive', fontSize: 22, letterSpacing: '0.06em', color: 'var(--color-on-surface-variant)' }}>No se encontraron resultados</p>
-            <p style={{ fontSize: 13, color: 'var(--color-outline)', fontFamily: 'Inter, sans-serif' }}>Intenta con otros términos o ajusta los filtros</p>
+            <p style={{ fontFamily: 'Bangers, cursive', fontSize: 22, letterSpacing: '0.06em', color: 'var(--color-on-surface-variant)' }}>No results found</p>
+            <p style={{ fontSize: 13, color: 'var(--color-outline)', fontFamily: 'Inter, sans-serif' }}>Try different terms or adjust the filters</p>
           </div>
         ) : (
           <>
@@ -448,7 +448,7 @@ export default function Catalog() {
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: 40 }}>
                 <button onClick={loadMore} disabled={loading} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '11px 30px', borderRadius: 99, border: '1px solid rgba(93,230,255,0.4)', background: 'rgba(93,230,255,0.08)', color: '#5de6ff', fontWeight: 700, fontSize: 13, fontFamily: 'Orbitron, sans-serif', opacity: loading ? 0.5 : 1, boxShadow: '0 0 16px rgba(93,230,255,0.1)' }}>
                   {loading ? <div style={{ width: 16, height: 16, border: '2px solid rgba(93,230,255,0.3)', borderTopColor: '#5de6ff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> : <span className="material-symbols-outlined" style={{ fontSize: 18 }}>expand_more</span>}
-                  Cargar más
+                  Load More
                 </button>
               </div>
             )}

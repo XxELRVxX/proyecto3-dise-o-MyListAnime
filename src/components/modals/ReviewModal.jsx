@@ -23,7 +23,6 @@ const REVIEW_TAGS = [
 ]
 
 // -- funcion de guardado simulado --------------------------------------------------------─
-// reemplazar esta funcion con la llamada real a firestore cuando se este en el backend
 // firma esperada saveReview(userId, reviewData) => Promise
 async function mockSaveReview(_uid, data) {
   await new Promise(r => setTimeout(r, 800)) // simula retraso de red

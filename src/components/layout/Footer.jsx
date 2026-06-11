@@ -5,19 +5,19 @@ import { Link } from 'react-router-dom'
 
 const FOOTER_LINKS = [
   {
-    title: 'Navegar',
+    title: 'Browse',
     links: [
-      { to: '/',         label: 'Inicio'   },
-      { to: '/catalog',  label: 'Catálogo' },
+      { to: '/',         label: 'Home'   },
+      { to: '/catalog',  label: 'Catalog' },
       { to: '/rankings', label: 'Rankings' },
-      { to: '/my-list',  label: 'Mi Lista' },
+      { to: '/my-list',  label: 'My List' },
     ],
   },
   {
-    title: 'Cuenta',
+    title: 'Account',
     links: [
-      { to: '/login',   label: 'Iniciar sesión' },
-      { to: '/profile', label: 'Mi perfil'       },
+      { to: '/login',   label: 'Login' },
+      { to: '/profile', label: 'My Profile' },
     ],
   },
   {
@@ -51,12 +51,12 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-xs text-on-surface-variant leading-relaxed" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-              Tu base de datos personal de anime y manga. Descubre, organiza y comparte tu colección.
+              Your personal anime and manga database. Discover, organize and share your collection.
             </p>
             {/* Badge API */}
             <div className="flex items-center gap-2 mt-3">
               <span className="genre-chip text-secondary border-secondary/30 bg-secondary/10">
-                🔗 Datos por Jikan API
+                🔗 Powered by Jikan API
               </span>
             </div>
           </div>
@@ -98,7 +98,7 @@ export default function Footer() {
         {/* Línea inferior */}
         <div className="border-t border-outline-variant/20 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-on-surface-variant text-center sm:text-left" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-            © {year} MyListAnime — Proyecto universitario. Datos por{' '}
+            © {year} MyListAnime — University project. Data by{' '}
             <a href="https://jikan.moe" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
               Jikan
             </a>{' '}
@@ -109,7 +109,7 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-3">
             <span className="text-xs text-on-surface-variant" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-              Hecho con ❤️ y mucho anime
+              Made with ❤️ and anime
             </span>
           </div>
         </div>

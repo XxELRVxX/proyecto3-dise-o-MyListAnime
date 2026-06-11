@@ -61,7 +61,7 @@ export const searchAnime = (query, page = 1, filters = {}) => {
   return fetchJikan(`/anime?${params}`)
 }
 
-// Navegar catálogo sin query — aplica todos los filtros
+// Buscar el catalogo sin la busqueda de query
 export const browseAnime = (page = 1, filters = {}) => {
   const params = new URLSearchParams({ page, limit: 24 })
   if (filters.type)   params.set('type',     filters.type)
@@ -119,28 +119,58 @@ export const getRankings = (type = 'anime', category = 'bypopularity', page = 1)
   type === 'anime' ? getTopAnime(page, category) : getTopManga(page, category)
 
 // ── Normalize entry ────────────────────────────────────────────
+// Status values translated to English for UI consistency
+const STATUS_MAP = {
+  'Currently Airing': 'Airing',
+  'Finished Airing':  'Finished',
+  'Not yet aired':    'Upcoming',
+  'Publishing':       'Publishing',
+  'Finished':         'Finished',
+  'On Hiatus':        'On Hiatus',
+  'Discontinued':     'Discontinued',
+}
+
+const SEASON_MAP = {
+  spring: 'Spring',
+  summer: 'Summer',
+  fall:   'Fall',
+  winter: 'Winter',
+}
+
+const SOURCE_MAP = {
+  'Manga':           'Manga',
+  'Light novel':     'Light Novel',
+  'Visual novel':    'Visual Novel',
+  'Original':        'Original',
+  'Web manga':       'Web Manga',
+  'Novel':           'Novel',
+  '4-koma manga':    '4-Koma',
+  'Game':            'Game',
+  'Unknown':         'Unknown',
+}
+
 export const normalizeEntry = (entry, type = 'anime') => ({
   id:         entry.mal_id,
   type,
-  title:      entry.title || entry.title_english,
+  title:      entry.title_english || entry.title,
   titleJa:    entry.title,
   image:      entry.images?.jpg?.large_image_url || entry.images?.jpg?.image_url,
   score:      entry.score,
   scoredBy:   entry.scored_by,
   rank:       entry.rank,
   popularity: entry.popularity,
-  status:     entry.status,
+  status:     STATUS_MAP[entry.status] || entry.status,
   episodes:   entry.episodes,
   chapters:   entry.chapters,
   volumes:    entry.volumes,
   synopsis:   entry.synopsis,
-  genres:     entry.genres?.map(g => g.name)   || [],
-  studios:    entry.studios?.map(s => s.name)  || [],
-  authors:    entry.authors?.map(a => a.name)  || [],
+  genres:     entry.genres?.map(g => g.name)  || [],
+  studios:    entry.studios?.map(s => s.name) || [],
+  authors:    entry.authors?.map(a => a.name) || [],
   year:       entry.year || entry.published?.prop?.from?.year,
-  season:     entry.season,
+  season:     SEASON_MAP[entry.season] || entry.season,
   rating:     entry.rating,
-  source:     entry.source,
+  source:     SOURCE_MAP[entry.source] || entry.source,
   duration:   entry.duration,
   trailer:    entry.trailer?.url,
   url:        entry.url,

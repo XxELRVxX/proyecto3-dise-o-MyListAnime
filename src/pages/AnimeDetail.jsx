@@ -190,9 +190,9 @@ export default function AnimeDetail() {
                       ? 'text-secondary border-secondary/40 bg-secondary/10'
                       : 'text-outline border-outline-variant/40'
                   }`}>
-                    {entry.status === 'Currently Airing' ? '● En emisión'
-                      : entry.status === 'Publishing'    ? '● Publicando'
-                      : entry.status === 'Finished Airing' ? 'Finalizado'
+                    {entry.status === 'Currently Airing' ? '● On Air'
+                      : entry.status === 'Publishing'    ? '● Publishing'
+                      : entry.status === 'Finished Airing' ? 'Finished'
                       : entry.status}
                   </span>
                 )}
@@ -257,18 +257,18 @@ export default function AnimeDetail() {
               {/* Stats */}
               <div className="flex gap-3 flex-wrap">
                 {entry.rank       && <StatBadge label="Ranking"    value={`#${entry.rank}`} />}
-                {entry.popularity && <StatBadge label="Popularidad" value={`#${entry.popularity}`} />}
-                {entry.episodes   && <StatBadge label="Episodios"  value={entry.episodes} />}
-                {entry.chapters   && <StatBadge label="Capítulos"  value={entry.chapters} />}
-                {entry.volumes    && <StatBadge label="Volúmenes"  value={entry.volumes} />}
-                {entry.year       && <StatBadge label="Año"        value={entry.year} />}
-                {entry.source     && <StatBadge label="Fuente"     value={entry.source} />}
+                {entry.popularity && <StatBadge label="Popularity" value={`#${entry.popularity}`} />}
+                {entry.episodes   && <StatBadge label="Episodes"  value={entry.episodes} />}
+                {entry.chapters   && <StatBadge label="Chapters"  value={entry.chapters} />}
+                {entry.volumes    && <StatBadge label="Volumes"  value={entry.volumes} />}
+                {entry.year       && <StatBadge label="Year"        value={entry.year} />}
+                {entry.source     && <StatBadge label="Source"     value={entry.source} />}
               </div>
 
               {/* Estudio / autores */}
               {(entry.studios?.length > 0 || entry.authors?.length > 0) && (
                 <p className="text-sm text-on-surface-variant" style={{ fontFamily: 'Inter, sans-serif' }}>
-                  {type === 'anime' ? 'Estudio' : 'Autor'}:{' '}
+                  {type === 'anime' ? 'Studio' : 'Author'}:{' '}
                   <span className="text-primary font-semibold">
                     {(entry.studios?.length ? entry.studios : entry.authors).join(', ')}
                   </span>
@@ -286,7 +286,7 @@ export default function AnimeDetail() {
                           style={{ fontVariationSettings: "'FILL' 1" }}>
                       play_circle
                     </span>
-                    Ver tráiler
+                    View Trailer
                   </button>
                 )}
                 {user && (
@@ -295,7 +295,7 @@ export default function AnimeDetail() {
                     className="btn-secondary flex items-center gap-2"
                   >
                     <span className="material-symbols-outlined text-[16px]">bookmark_add</span>
-                    Agregar a lista
+                    Add to List
                   </button>
                 )}
                 {user && (
@@ -304,7 +304,7 @@ export default function AnimeDetail() {
                     className="btn-ghost border border-outline-variant/40 flex items-center gap-2"
                   >
                     <span className="material-symbols-outlined text-[16px]">rate_review</span>
-                    Reseñar
+                    Review
                   </button>
                 )}
                 {entry.url && (
@@ -315,7 +315,7 @@ export default function AnimeDetail() {
                     className="btn-ghost border border-outline-variant/40 flex items-center gap-2"
                   >
                     <span className="material-symbols-outlined text-[16px]">open_in_new</span>
-                    MAL
+                    MyAnimeList
                   </a>
                 )}
               </div>
@@ -332,7 +332,7 @@ export default function AnimeDetail() {
         {/* ── Sinopsis ── */}
         {entry.synopsis && (
           <section>
-            <SectionTitle icon="menu_book">Sinopsis</SectionTitle>
+            <SectionTitle icon="menu_book">Synopsis</SectionTitle>
             <p
               className="text-on-surface-variant leading-relaxed max-w-3xl"
               style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.9rem', lineHeight: 1.8 }}
@@ -345,14 +345,14 @@ export default function AnimeDetail() {
         {/* ── Tráiler ── */}
         {trailerEmbed && (
           <section>
-            <SectionTitle icon="play_circle">Tráiler Oficial</SectionTitle>
+            <SectionTitle icon="play_circle">Official Trailer</SectionTitle>
             <div
               className="rounded-2xl overflow-hidden shadow-2xl neon-glow-purple"
               style={{ maxWidth: 720, aspectRatio: '16/9' }}
             >
               <iframe
                 src={trailerEmbed}
-                title={`Tráiler de ${entry.title}`}
+                title={`Official Trailer of ${entry.title}`}
                 className="w-full h-full"
                 allowFullScreen
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -366,7 +366,7 @@ export default function AnimeDetail() {
         {/* ── Personajes (solo anime) ── */}
         {type === 'anime' && characters.length > 0 && (
           <section>
-            <SectionTitle icon="groups">Personajes</SectionTitle>
+            <SectionTitle icon="groups">Characters</SectionTitle>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
               {characters.map((c) => {
                 const char   = c.character
@@ -404,7 +404,7 @@ export default function AnimeDetail() {
         {reviews.length > 0 && (
           <section>
             <SectionTitle icon="rate_review">
-              Reseñas de la comunidad
+              Community Reviews
             </SectionTitle>
             <div className="space-y-4 max-w-3xl">
               {reviews.map((rev, i) => (
@@ -477,20 +477,20 @@ export default function AnimeDetail() {
         {/* Mensaje si no hay reseñas */}
         {reviews.length === 0 && !loading && (
           <section>
-            <SectionTitle icon="rate_review">Reseñas de la comunidad</SectionTitle>
+            <SectionTitle icon="rate_review">Community Reviews</SectionTitle>
             <div className="glass-card rounded-xl p-8 text-center max-w-md">
               <span className="material-symbols-outlined text-[40px] text-outline mb-3 block">
                 rate_review
               </span>
               <p className="text-on-surface-variant text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
-                Todavía no hay reseñas para este título.
+                No reviews yet for this title.
               </p>
               {user && (
                 <button
                   onClick={() => setShowReview(true)}
                   className="btn-primary mt-4 text-sm"
                 >
-                  Sé el primero en reseñar
+                  Be the first to review
                 </button>
               )}
             </div>
@@ -501,7 +501,7 @@ export default function AnimeDetail() {
         <div className="flex justify-start pt-4">
           <Link to="/" className="btn-ghost border border-outline-variant/30 flex items-center gap-2">
             <span className="material-symbols-outlined text-[16px]">arrow_back</span>
-            Volver al inicio
+            Back to Home
           </Link>
         </div>
 

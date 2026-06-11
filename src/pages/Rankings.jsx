@@ -9,16 +9,16 @@ import AddToListModal from '../components/modals/AddToListModal'
 
 const CATEGORIES = {
   anime: [
-    { value: 'bypopularity', label: 'Más Populares', icon: 'local_fire_department' },
-    { value: 'airing',       label: 'En Emisión',    icon: 'live_tv' },
-    { value: 'upcoming',     label: 'Próximos',      icon: 'upcoming' },
-    { value: 'favorite',     label: 'Favoritos',     icon: 'favorite' },
+    { value: 'bypopularity', label: 'Most Popular', icon: 'local_fire_department' },
+    { value: 'airing',       label: 'Currently Airing',    icon: 'live_tv' },
+    { value: 'upcoming',     label: 'Upcoming',      icon: 'upcoming' },
+    { value: 'favorite',     label: 'Favorites',     icon: 'favorite' },
   ],
   manga: [
-    { value: 'bypopularity', label: 'Más Populares', icon: 'local_fire_department' },
-    { value: 'publishing',   label: 'Publicando',    icon: 'menu_book' },
-    { value: 'upcoming',     label: 'Próximos',      icon: 'upcoming' },
-    { value: 'favorite',     label: 'Favoritos',     icon: 'favorite' },
+    { value: 'bypopularity', label: 'Most Popular', icon: 'local_fire_department' },
+    { value: 'publishing',   label: 'Currently Publishing',    icon: 'menu_book' },
+    { value: 'upcoming',     label: 'Upcoming',      icon: 'upcoming' },
+    { value: 'favorite',     label: 'Favorites',     icon: 'favorite' },
   ],
 }
 
@@ -292,7 +292,7 @@ export default function Rankings() {
           Rankings
         </h1>
         <p style={{ fontSize: 13, color: 'var(--color-on-surface-variant)', fontFamily: 'Inter, sans-serif' }}>
-          Los mejores anime y manga según MyAnimeList
+          The Best Anime and Manga According to MyAnimeList
         </p>
       </div>
 
@@ -375,7 +375,7 @@ export default function Rankings() {
             }}
           >
             <span className="material-symbols-outlined" style={{ fontSize: 18 }}>expand_more</span>
-            Cargar más
+            Load more
           </button>
         </div>
       )}
