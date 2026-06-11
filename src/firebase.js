@@ -1,14 +1,12 @@
 // Firebase se inicializa con variables de entorno (.env)
-// Nunca escribas las keys directamente aquí
-// Guía de configuración: https://console.firebase.google.com/
 //
 // Pasos para configurar:
-// 1. Ve a https://console.firebase.google.com/ y crea un proyecto
+// 1. Ir a https://console.firebase.google.com/ y crear un proyecto
 // 2. En el proyecto: Project Settings > General > Your apps > Add app (Web)
-// 3. Copia los valores al archivo .env (usa .env.example como plantilla)
+// 3. Copiar los valores al archivo .env (usa .env.example como plantilla)
 // 4. En Firebase Console habilita: Authentication > Sign-in method > Google
 // 5. En Firebase Console habilita: Firestore Database (modo producción)
-// 6. En Firestore, agrega estas reglas en la pestaña "Rules":
+// 6. En Firestore, agregarr estas reglas en la pestaña "Rules":
 //
 //    rules_version = '2';
 //    service cloud.firestore {
