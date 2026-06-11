@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { getTopAnime, getTopManga, normalizeEntry } from '../services/jikan'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 import { useContentFilter } from '../context/ContentFilterContext'
 import { SkeletonRankRow } from '../components/ui/Skeleton'
 import AddToListModal from '../components/modals/AddToListModal'
@@ -21,7 +22,7 @@ const CATEGORIES = {
   ],
 }
 
-const RANKINGS_BG = '/fanart/6.jpeg'
+const RANKINGS_BG = '/fanart/ranking-bg.jpg'
 
 function ParallaxBackground() {
   const [offsetY, setOffsetY] = useState(0)
@@ -42,7 +43,7 @@ function ParallaxBackground() {
   }, [])
   return (
     <div aria-hidden="true" style={{ position: 'fixed', inset: 0, overflow: 'hidden', zIndex: 0 }}>
-      <img src={RANKINGS_BG} alt="" style={{
+      <img className="parallax-img" src={RANKINGS_BG} alt="" style={{
         position: 'absolute', inset: '-10% 0',
         width: '100%', height: '120%',
         objectFit: 'cover', objectPosition: 'center top',
@@ -53,8 +54,7 @@ function ParallaxBackground() {
       <div style={{
         position: 'absolute', inset: 0,
         background: `linear-gradient(to bottom,
-          rgba(11,19,38,0.78) 0%, rgba(11,19,38,0.68) 30%,
-          rgba(11,19,38,0.75) 60%, rgba(11,19,38,0.90) 100%)`,
+          var(--color-overlay-1) 0%, var(--color-overlay-2) 30%, var(--color-overlay-2) 60%, var(--color-overlay-3) 100%)`,
       }} />
     </div>
   )
@@ -92,21 +92,25 @@ function RankBadge({ rank }) {
 }
 
 // ── RankingRow ───────────────────────────────────────────────
-function RankingRow({ entry, rank, user, onAdd }) {
+function RankingRow({ entry, rank, user, onAdd, isDark }) {
   const isTop3 = rank <= 3
 
   return (
     <Link
       to={`/${entry.type}/${entry.id}`}
+      className="rank-row"
       style={{
         display: 'flex', alignItems: 'center', gap: 12,
         padding: '10px 14px', borderRadius: 14,
         background: isTop3
-          ? 'linear-gradient(90deg, rgba(221,183,255,0.07) 0%, rgba(11,19,38,0.4) 100%)'
-          : 'var(--color-surface-container, #171f33)',
+          ? (isDark
+              ? 'linear-gradient(90deg, rgba(221,183,255,0.07) 0%, rgba(11,19,38,0.4) 100%)'
+              : 'linear-gradient(90deg, rgba(109,40,217,0.12) 0%, rgba(240,233,255,0.55) 100%)')
+          : (isDark ? 'var(--c-rank-bg)' : 'rgba(240,233,255,0.5)'),
         border: isTop3
-          ? `1px solid rgba(221,183,255,${rank === 1 ? '0.35' : '0.18'})`
-          : '1px solid rgba(77,67,84,0.35)',
+          ? `1px solid ${isDark ? `rgba(221,183,255,${rank === 1 ? '0.35' : '0.18'})` : `rgba(109,40,217,${rank === 1 ? '0.4' : '0.2'})`}`
+          : (isDark ? '1px solid rgba(77,67,84,0.35)' : '1px solid rgba(109,40,217,0.15)'),
+        backdropFilter: 'blur(8px)',
         transition: 'all .2s',
         textDecoration: 'none',
         position: 'relative',
@@ -120,7 +124,7 @@ function RankingRow({ entry, rank, user, onAdd }) {
         if (btn) btn.style.opacity = '1'
       }}
       onMouseLeave={e => {
-        e.currentTarget.style.borderColor = isTop3 ? `rgba(221,183,255,${rank === 1 ? '0.35' : '0.18'})` : 'rgba(77,67,84,0.35)'
+        e.currentTarget.style.borderColor = isTop3 ? `rgba(221,183,255,${rank === 1 ? '0.35' : '0.18'})` : 'var(--color-card-border)'
         e.currentTarget.style.transform = ''
         e.currentTarget.style.boxShadow = ''
         const btn = e.currentTarget.querySelector('.add-btn')
@@ -239,6 +243,7 @@ function RankingRow({ entry, rank, user, onAdd }) {
 export default function Rankings() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { user } = useAuth()
+  const { isDark } = useTheme()
   const { filterList } = useContentFilter()
 
   const [type,     setType]     = useState(searchParams.get('type') || 'anime')
@@ -273,7 +278,7 @@ export default function Rankings() {
   }
 
   return (
-    <div className="page-enter" style={{ position: 'relative', minHeight: '100vh' }}>
+    <div className="page-enter" style={{ position: 'relative', minHeight: '100vh', backgroundColor: 'var(--color-background)' }}>
       <ParallaxBackground />
       <div style={{ position: 'relative', zIndex: 1, maxWidth: 1280, margin: '0 auto', padding: '24px 20px' }}>
 
@@ -349,6 +354,7 @@ export default function Rankings() {
               rank={idx + 1}
               user={user}
               onAdd={setModal}
+              isDark={isDark}
             />
           ))
         }

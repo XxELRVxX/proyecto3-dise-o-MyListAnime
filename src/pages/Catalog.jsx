@@ -35,7 +35,7 @@ function ParallaxBackground() {
   }, [])
   return (
     <div aria-hidden="true" style={{ position: 'fixed', inset: 0, overflow: 'hidden', zIndex: 0 }}>
-      <img src={CATALOG_BG} alt="" style={{
+      <img className="parallax-img" src={CATALOG_BG} alt="" style={{
         position: 'absolute', inset: '-10% 0', width: '100%', height: '120%',
         objectFit: 'cover', objectPosition: 'center top', filter: 'blur(2px)',
         transform: `translateY(${offsetY}px)`, willChange: 'transform',
@@ -87,7 +87,7 @@ function PosterCard({ entry, onAdd, user, index = 0 }) {
       <Link to={`/${entry.type}/${entry.id}`} style={{ display: 'block', position: 'relative', zIndex: 1 }}>
         {/* imagen wrapper — overflow visible para que los kunais salgan */}
         <div style={{
-          background: 'rgba(23,31,51,0.92)',
+          background: 'var(--color-card-bg)',
           border: hovered ? '1px solid rgba(221,183,255,0.6)' : '1px solid rgba(77,67,84,0.5)',
           borderRadius: 14, overflow: 'hidden',
           transform: hovered ? 'translateY(-6px) scale(1.025)' : 'translateY(0) scale(1)',
@@ -142,8 +142,8 @@ function PosterCard({ entry, onAdd, user, index = 0 }) {
                   )
                 })}
                 {/* Badge del score */}
-                <div style={{
-                  background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)',
+                <div className="score-badge" style={{
+                  background: 'var(--c-score-bg)', backdropFilter: 'blur(8px)',
                   border: '1px solid rgba(251,191,36,0.5)', borderRadius: 6,
                   padding: '3px 7px', fontSize: 11, fontWeight: 700,
                   color: '#fbbf24', display: 'flex', alignItems: 'center', gap: 3,
@@ -155,9 +155,9 @@ function PosterCard({ entry, onAdd, user, index = 0 }) {
               </div>
             )}
 
-            <div style={{
+            <div className="type-badge" style={{
               position: 'absolute', bottom: 7, left: 7,
-              background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)',
+              background: 'var(--c-type-bg)', backdropFilter: 'blur(6px)',
               border: '1px solid rgba(221,183,255,0.2)', borderRadius: 4,
               padding: '2px 6px', fontSize: 9, fontWeight: 700,
               color: '#ddb7ff', fontFamily: 'Orbitron, sans-serif',
@@ -165,7 +165,7 @@ function PosterCard({ entry, onAdd, user, index = 0 }) {
             }}>
               {entry.type === 'anime' ? (entry.episodes ? `${entry.episodes} eps` : 'Anime') : (entry.chapters ? `${entry.chapters} ch` : 'Manga')}
             </div>
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(11,19,38,0.9) 0%, transparent 45%)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'var(--c-img-grad)', pointerEvents: 'none' }} />
           </div>
 
           <div style={{ padding: '9px 11px 11px' }}>
@@ -318,7 +318,7 @@ export default function Catalog() {
   const ratings = filterEnabled ? RATINGS : [...RATINGS, 'rx']
 
   return (
-    <div className="page-enter" style={{ position: 'relative', minHeight: '100vh' }}>
+    <div className="page-enter" style={{ position: 'relative', minHeight: '100vh', backgroundColor: 'var(--color-background)' }}>
       <ParallaxBackground />
       <div aria-hidden="true" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
         {PARTICLES.map(p => (
@@ -332,11 +332,13 @@ export default function Catalog() {
 
       <div style={{ position: 'relative', zIndex: 1, maxWidth: 1280, margin: '0 auto', padding: '24px 20px' }}>
         <div style={{ marginBottom: 28 }}>
-          <h1 style={{
+          <div className="catalog-title-wrap">
+          <h1 className="catalog-glitch-title" style={{
             fontFamily: 'Bangers, cursive', fontSize: 'clamp(2.4rem, 5vw, 3.2rem)', letterSpacing: '0.06em',
             background: 'linear-gradient(90deg, #ddb7ff 0%, #5de6ff 60%, #ffb2b7 100%)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: 4,
           }}>Catálogo</h1>
+          </div>
           <p style={{ fontSize: 13, color: 'var(--color-on-surface-variant)', fontFamily: 'Inter, sans-serif' }}>
             Explora miles de anime y manga con datos reales de MyAnimeList
           </p>
@@ -369,9 +371,9 @@ export default function Catalog() {
             <div style={{ flex: 1, position: 'relative' }}>
               <span className="material-symbols-outlined" style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', fontSize: 18, color: 'var(--color-on-surface-variant)', pointerEvents: 'none' }}>search</span>
               <input value={inputVal} onChange={e => setInputVal(e.target.value)} placeholder={`Buscar ${mediaType}...`}
-                style={{ width: '100%', padding: '11px 12px 11px 40px', background: 'rgba(23,31,51,0.8)', border: '1px solid rgba(77,67,84,0.6)', borderRadius: 12, fontSize: 14, color: 'var(--color-on-surface)', fontFamily: 'Inter, sans-serif', outline: 'none', transition: 'border-color .2s, box-shadow .2s' }}
+                style={{ width: '100%', padding: '11px 12px 11px 40px', background: 'var(--color-input-bg)', border: '1px solid rgba(77,67,84,0.6)', borderRadius: 12, fontSize: 14, color: 'var(--color-on-surface)', fontFamily: 'Inter, sans-serif', outline: 'none', transition: 'border-color .2s, box-shadow .2s' }}
                 onFocus={e => { e.target.style.borderColor = 'rgba(221,183,255,0.5)'; e.target.style.boxShadow = '0 0 16px rgba(221,183,255,0.1)' }}
-                onBlur={e => { e.target.style.borderColor = 'rgba(77,67,84,0.6)'; e.target.style.boxShadow = 'none' }}
+                onBlur={e => { e.target.style.borderColor = 'var(--color-card-border)'; e.target.style.boxShadow = 'none' }}
               />
             </div>
             <button type="submit" style={{ padding: '11px 22px', borderRadius: 12, background: 'linear-gradient(135deg, #ddb7ff, #b76dff)', color: '#490080', border: 'none', fontWeight: 700, fontSize: 13, fontFamily: 'Orbitron, sans-serif', boxShadow: '0 0 18px rgba(221,183,255,0.35)' }}>Buscar</button>
@@ -379,7 +381,7 @@ export default function Catalog() {
           <button onClick={() => setFiltersOpen(o => !o)} style={{
             display: 'flex', alignItems: 'center', gap: 6, padding: '11px 16px', borderRadius: 12, fontSize: 13, fontWeight: 600, fontFamily: 'Orbitron, sans-serif', transition: 'all .2s',
             border: filtersOpen || activeFiltersCount > 0 ? '1px solid #ddb7ff' : '1px solid rgba(77,67,84,0.5)',
-            background: filtersOpen || activeFiltersCount > 0 ? 'rgba(221,183,255,0.1)' : 'rgba(23,31,51,0.8)',
+            background: filtersOpen || activeFiltersCount > 0 ? 'rgba(221,183,255,0.1)' : 'var(--color-input-bg)',
             color: filtersOpen || activeFiltersCount > 0 ? '#ddb7ff' : 'var(--color-on-surface-variant)',
           }}>
             <span className="material-symbols-outlined" style={{ fontSize: 17 }}>tune</span>
@@ -389,7 +391,7 @@ export default function Catalog() {
         </div>
 
         {filtersOpen && (
-          <div className="animate-slide-up" style={{ background: 'rgba(17,25,44,0.95)', backdropFilter: 'blur(12px)', border: '1px solid rgba(221,183,255,0.15)', borderRadius: 16, padding: '18px 20px', marginBottom: 20, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+          <div className="animate-slide-up" style={{ background: 'var(--c-filter-bg)', backdropFilter: 'blur(12px)', border: '1px solid rgba(221,183,255,0.15)', borderRadius: 16, padding: '18px 20px', marginBottom: 20, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16 }}>
               {[{ label: 'Tipo', options: mediaType === 'anime' ? ANIME_TYPES : MANGA_TYPES, key: 'type' }, { label: 'Estado', options: mediaType === 'anime' ? ANIME_STATUS : MANGA_STATUS, key: 'status' }].map(({ label, options, key }) => (
                 <div key={key}>
@@ -399,14 +401,14 @@ export default function Catalog() {
               ))}
               <div>
                 <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(221,183,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8, fontFamily: 'Orbitron, sans-serif' }}>Género</div>
-                <select value={filters.genre} onChange={e => setFilters(f => ({ ...f, genre: e.target.value }))} style={{ width: '100%', padding: '7px 10px', background: 'rgba(23,31,51,0.9)', border: '1px solid rgba(77,67,84,0.6)', borderRadius: 8, fontSize: 13, color: 'var(--color-on-surface)', fontFamily: 'Inter, sans-serif', outline: 'none' }}>
+                <select value={filters.genre} onChange={e => setFilters(f => ({ ...f, genre: e.target.value }))} style={{ width: '100%', padding: '7px 10px', background: 'var(--color-card-bg)', border: '1px solid rgba(77,67,84,0.6)', borderRadius: 8, fontSize: 13, color: 'var(--color-on-surface)', fontFamily: 'Inter, sans-serif', outline: 'none' }}>
                   <option value="">Todos</option>
                   {[...new Map(genres.map(g => [g.mal_id, g])).values()].map(g => <option key={g.mal_id} value={g.mal_id}>{g.name}</option>)}
                 </select>
               </div>
               <div>
                 <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(221,183,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8, fontFamily: 'Orbitron, sans-serif' }}>Ordenar</div>
-                <select value={filters.order_by} onChange={e => setFilters(f => ({ ...f, order_by: e.target.value }))} style={{ width: '100%', padding: '7px 10px', background: 'rgba(23,31,51,0.9)', border: '1px solid rgba(77,67,84,0.6)', borderRadius: 8, fontSize: 13, color: 'var(--color-on-surface)', fontFamily: 'Inter, sans-serif', outline: 'none' }}>
+                <select value={filters.order_by} onChange={e => setFilters(f => ({ ...f, order_by: e.target.value }))} style={{ width: '100%', padding: '7px 10px', background: 'var(--color-card-bg)', border: '1px solid rgba(77,67,84,0.6)', borderRadius: 8, fontSize: 13, color: 'var(--color-on-surface)', fontFamily: 'Inter, sans-serif', outline: 'none' }}>
                   {(mediaType === 'anime' ? ORDER_ANIME : ORDER_MANGA).map(o => <option key={o} value={o}>{o}</option>)}
                 </select>
               </div>

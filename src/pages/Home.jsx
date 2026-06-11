@@ -75,7 +75,7 @@ function ParallaxBackground() {
 // Mantiene el mismo formato en todas las secciones del home
 function SectionHeader({ icon, title, subtitle, linkTo, linkLabel }) {
   return (
-    <div className="flex items-center justify-between mb-5">
+    <div className="section-header flex items-center justify-between mb-5">
       <div className="flex items-center gap-3">
         <span
           className="material-symbols-outlined text-secondary text-2xl"
@@ -282,7 +282,7 @@ function PosterCard({ entry, user, onAdd }) {
           )}
         </div>
         <div className="p-2.5" style={{
-          background: hovered ? 'rgba(15,0,30,0.96)' : '',
+          background: hovered ? 'var(--c-hover-bg)' : '',
           transition: 'background 0.3s',
         }}>
           <p className="text-xs font-semibold text-on-surface line-clamp-2 leading-tight mb-1">
@@ -341,7 +341,7 @@ function EpisodeCard({ item }) {
           }}
           onError={e => { e.target.src = 'https://placehold.co/85x128/0b1326/ddb7ff?text=?' }}
         />
-        <div className="p-3 flex flex-col gap-1 min-w-0" style={{ background: hovered ? 'rgba(15,0,30,0.96)' : '', transition: 'background 0.3s' }}>
+        <div className="p-3 flex flex-col gap-1 min-w-0" style={{ background: hovered ? 'var(--c-hover-bg)' : '', transition: 'background 0.3s' }}>
           <span className="text-[10px] font-bold tracking-widest uppercase text-primary">
             {item.episodes ? `${item.episodes} eps` : 'Nuevo'}
           </span>
@@ -563,7 +563,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="page-enter relative" style={{ minHeight: '100vh' }}>
+    <div className="page-enter relative" style={{ minHeight: '100vh', backgroundColor: 'var(--color-background)' }}>
 
       {/* Fan art con parallax — fondo de toda la página */}
       <ParallaxBackground />
@@ -595,10 +595,7 @@ export default function Home() {
               <div
                 className="absolute inset-0"
                 style={{
-                  background: `
-                    linear-gradient(to right,  rgba(11,19,38,0.95) 0%, rgba(11,19,38,0.7) 40%, rgba(11,19,38,0.2) 100%),
-                    linear-gradient(to top,    rgba(11,19,38,0.8)  0%, transparent 50%)
-                  `
+                  background: 'var(--c-hero-grad)'
                 }}
               />
               <GenkidamaAura containerRef={heroRef} />
@@ -680,7 +677,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════
             EN TENDENCIA — 2 filas de poster cards
         ══════════════════════════════════════════ */}
-        <section className="mb-10">
+        <section className="home-section mb-10">
           <SectionHeader
             icon="local_fire_department"
             title="En Tendencia"
@@ -706,8 +703,7 @@ export default function Home() {
                 <PosterCard key={e.id} entry={e} user={user} onAdd={setModal} />
               ))}
             </div>
-         </> )}
-
+        </>  )}
         </section>
 
         {/* ── Divider ── */}
@@ -716,7 +712,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════
             TEMPORADA ACTUAL — 2 filas de episode cards
         ══════════════════════════════════════════ */}
-        <section className="mb-10">
+        <section className="home-section mb-10">
           <SectionHeader
             icon="ac_unit"
             title="Temporada Actual"
