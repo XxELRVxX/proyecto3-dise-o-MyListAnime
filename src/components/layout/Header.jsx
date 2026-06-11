@@ -1,50 +1,34 @@
-// Header rediseñado: fuente Bangers en logo, navegación animada con indicador activo,
-// toggle de tema mejorado, búsqueda integrada, avatar con menú desplegable
+// Barra de navegacion superior: fija, fondo transparente, siempre visible
+// Contiene: logotipo, enlaces de navegacion de escritorio, barra de busqueda, selector de tema y avatar de usuario
+// En dispositivos moviles: solo logotipo, icono de búsqueda y avatar (la navegacion completa se encuentra en BottomNav).
+
 import { useState, useRef, useEffect } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useTheme } from '../../context/ThemeContext'
-import { useAuth } from '../../context/AuthContext'
 
+// enlaces de navegacion de escritorio: se mantienen sincronizados con las rutas de App.jsx
 const NAV_LINKS = [
-  { to: '/',         label: 'Inicio',   icon: '🏠' },
-  { to: '/catalog',  label: 'Catálogo', icon: '🎌' },
-  { to: '/rankings', label: 'Rankings', icon: '🏆' },
-  { to: '/my-list',  label: 'Mi Lista', icon: '📋' },
+  { to: '/',         label: 'Home'    },
+  { to: '/catalog',  label: 'Catalog'  },
+  { to: '/rankings', label: 'Rankings'  },
+  { to: '/my-list',  label: 'My List'  },
 ]
 
 export default function Header() {
   const { isDark, toggleTheme } = useTheme()
-  const { user, logout } = useAuth()
   const navigate = useNavigate()
 
+  // estado de busqueda: entrada controlada
   const [query, setQuery]           = useState('')
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [menuOpen, setMenuOpen]     = useState(false)
-  const [scrolled, setScrolled]     = useState(false)
-  const inputRef  = useRef(null)
-  const menuRef   = useRef(null)
+  const [searchOpen, setSearchOpen] = useState(false) // mobile search overlay
+  const inputRef = useRef(null)
 
-  // Sombra al hacer scroll
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10)
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  // Enfocar input al abrir búsqueda
+  // enfocar la entrada cuando se abre la superposicion de busqueda movil
   useEffect(() => {
     if (searchOpen && inputRef.current) inputRef.current.focus()
   }, [searchOpen])
 
-  // Cerrar menú al hacer clic fuera
-  useEffect(() => {
-    const handler = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false)
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [])
-
+  // Enviar busqueda: navegar al catalogo con el parametro de consulta
   function handleSearch(e) {
     e.preventDefault()
     const trimmed = query.trim()
@@ -55,220 +39,127 @@ export default function Header() {
   }
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-300 ${
-        scrolled ? 'shadow-[0_4px_30px_rgba(221,183,255,0.12)]' : ''
-      }`}
-    >
-      <div className="max-w-[1280px] mx-auto px-4 h-16 flex items-center gap-3">
+    <header className="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-outline-variant/30">
+      <div className="max-w-[1280px] mx-auto px-4 h-16 flex items-center gap-4">
 
-        {/* ── Logo ── */}
+        {/* - Logo - */}
         <Link
           to="/"
-          className="flex items-center gap-2 shrink-0 select-none group"
+          className="flex items-center gap-2 shrink-0 select-none"
           aria-label="MyListAnime — inicio"
         >
-          {/* Ícono animado */}
-          <div className="relative w-9 h-9 flex items-center justify-center">
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary-container to-secondary opacity-80 group-hover:opacity-100 transition-opacity" />
-            <span className="relative text-lg font-black text-on-primary z-10" style={{ fontFamily: 'Bangers, cursive' }}>
-              MLA
-            </span>
-            {/* Glow pulse en hover */}
-            <div className="absolute inset-0 rounded-lg bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity animate-[glow-pulse_1.5s_ease-in-out_infinite_alternate]" />
-          </div>
-
-          <span
-            className="text-2xl text-on-surface hidden sm:block tracking-wide group-hover:text-primary transition-colors"
-            style={{ fontFamily: 'Bangers, cursive', letterSpacing: '0.05em' }}
-          >
-            My<span className="text-neon-purple">List</span>
-            <span className="text-neon-cyan">Anime</span>
+          <span className="material-symbols-outlined text-primary text-[28px]">
+            animated_images
+          </span>
+          <span className="font-bold text-headline-sm text-on-surface hidden sm:block">
+            MyList<span className="text-primary">Anime</span>
           </span>
         </Link>
 
-        {/* ── Navegación desktop ── */}
-        <nav className="hidden md:flex items-center gap-0.5 ml-2" aria-label="Navegación principal">
-          {NAV_LINKS.map(({ to, label, icon }) => (
+        {/* - enlaces de navegacion de escritorio - */}
+        <nav className="hidden md:flex items-center gap-1 ml-4" aria-label="Navegación principal">
+          {NAV_LINKS.map(({ to, label }) => (
             <NavLink
               key={to}
               to={to}
               end={to === '/'}
               className={({ isActive }) =>
-                `relative px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1.5 group
-                ${isActive
-                  ? 'text-secondary'
-                  : 'text-on-surface-variant hover:text-on-surface'
+                `px-3 py-1.5 rounded-md text-body-sm font-medium transition-colors ${
+                  isActive
+                    ? 'text-secondary bg-secondary/10'
+                    : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60'
                 }`
               }
             >
-              {({ isActive }) => (
-                <>
-                  <span className="text-base">{icon}</span>
-                  <span style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '0.78rem' }}>{label}</span>
-                  {/* Indicador activo animado */}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-secondary rounded-full shadow-[0_0_8px_rgba(93,230,255,0.8)]" />
-                  )}
-                  {/* Hover background */}
-                  <span className="absolute inset-0 rounded-lg bg-secondary/0 group-hover:bg-secondary/8 transition-colors" />
-                </>
-              )}
+              {label}
             </NavLink>
           ))}
         </nav>
 
-        {/* ── Espaciador ── */}
+        {/* - Espaciador - */}
         <div className="flex-1" />
 
-        {/* ── Buscador desktop ── */}
-        {searchOpen ? (
-          <form
-            onSubmit={handleSearch}
-            className="hidden md:flex items-center gap-2 animate-[fade-in_0.2s_ease-out]"
-          >
-            <div className="relative">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px] pointer-events-none">
-                search
-              </span>
-              <input
-                ref={inputRef}
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Buscar anime, manga..."
-                className="input-field pl-9 pr-4 py-2 text-sm w-64 rounded-full"
-              />
-            </div>
-            <button type="button" onClick={() => setSearchOpen(false)} className="btn-ghost p-1.5">
-              <span className="material-symbols-outlined text-[20px]">close</span>
-            </button>
-          </form>
-        ) : (
-          <button
-            className="hidden md:flex btn-ghost p-2"
-            onClick={() => setSearchOpen(true)}
-            aria-label="Abrir búsqueda"
-          >
-            <span className="material-symbols-outlined text-[22px]">search</span>
-          </button>
-        )}
+        {/* - Barra de busqueda escritorio - */}
+        <form
+          onSubmit={handleSearch}
+          className="hidden md:flex items-center relative"
+          role="search"
+        >
+          <span className="material-symbols-outlined absolute left-3 text-outline text-[18px] pointer-events-none">
+            search
+          </span>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search anime, manga..."
+            aria-label="Search"
+            className="input-field pl-9 pr-4 py-2 text-body-sm w-56 lg:w-72 rounded-full"
+          />
+        </form>
 
-        {/* ── Búsqueda móvil ── */}
+        {/* - busqueda movil - */}
         <button
           className="md:hidden btn-ghost p-2"
           onClick={() => setSearchOpen(true)}
-          aria-label="Abrir búsqueda"
+          aria-label="Open search"
         >
           <span className="material-symbols-outlined text-[22px]">search</span>
         </button>
 
-        {/* ── Toggle tema ── */}
+        {/* - selector de tema - */}
         <button
           onClick={toggleTheme}
-          className="btn-ghost p-2 relative group"
-          aria-label={isDark ? 'Modo claro' : 'Modo oscuro'}
-          title={isDark ? 'Modo claro' : 'Modo oscuro'}
+          className="btn-ghost p-2 shrink-0"
+          aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={isDark ? 'Light mode' : 'Dark mode'}
         >
-          <span
-            className={`material-symbols-outlined text-[22px] transition-transform duration-300 ${isDark ? 'rotate-0' : 'rotate-180'}`}
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
+          <span className="material-symbols-outlined text-[22px]">
             {isDark ? 'light_mode' : 'dark_mode'}
           </span>
-          {/* Glow en hover */}
-          <span className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10" />
         </button>
 
-        {/* ── Avatar / Menú usuario ── */}
-        {user ? (
-          <div className="relative" ref={menuRef}>
-            <button
-              onClick={() => setMenuOpen(o => !o)}
-              className="w-9 h-9 rounded-full border-2 border-primary/40 overflow-hidden hover:border-primary transition-all duration-200 hover:shadow-[0_0_12px_rgba(221,183,255,0.5)]"
-            >
-              <img
-                src={user.photoURL || ''}
-                alt={user.displayName}
-                className="w-full h-full object-cover"
-                onError={(e) => { e.target.style.display = 'none' }}
-              />
-            </button>
-
-            {menuOpen && (
-              <div className="absolute right-0 top-12 w-56 glass-card rounded-xl border border-primary/20 shadow-2xl animate-[slide-up_0.2s_ease-out] overflow-hidden">
-                {/* Info usuario */}
-                <div className="px-4 py-3 border-b border-outline-variant/30 bg-primary/5">
-                  <p className="text-sm font-semibold text-on-surface truncate" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                    {user.displayName}
-                  </p>
-                  <p className="text-xs text-on-surface-variant truncate mt-0.5">{user.email}</p>
-                </div>
-                <div className="py-1">
-                  {[
-                    { to: '/profile', icon: 'person', label: 'Mi Perfil' },
-                    { to: '/my-list', icon: 'bookmarks', label: 'Mi Lista' },
-                  ].map(({ to, icon, label }) => (
-                    <Link
-                      key={to}
-                      to={to}
-                      onClick={() => setMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-high/50 transition-colors"
-                      style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '0.75rem' }}
-                    >
-                      <span className="material-symbols-outlined text-[18px] text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>{icon}</span>
-                      {label}
-                    </Link>
-                  ))}
-                  <button
-                    onClick={() => { logout(); setMenuOpen(false) }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-tertiary hover:bg-tertiary/10 transition-colors"
-                    style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '0.75rem' }}
-                  >
-                    <span className="material-symbols-outlined text-[18px]">logout</span>
-                    Cerrar sesión
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <Link
-            to="/login"
-            className="btn-primary text-xs px-4 py-2"
-          >
-            Entrar
-          </Link>
-        )}
+        {/* - avatar de usuario / enlace de inicio de sesion - */}
+        <Link
+          to="/profile"
+          className="shrink-0 w-9 h-9 rounded-full border-2 border-primary/30 bg-surface-container-high
+                     flex items-center justify-center overflow-hidden
+                     hover:border-primary/60 transition-colors"
+          aria-label="Go to profile"
+        >
+          <span className="material-symbols-outlined text-outline text-[20px]">person</span>
+        </Link>
       </div>
 
-      {/* ── Overlay búsqueda móvil ── */}
+      {/* - overlay de busqueda movil - */}
       {searchOpen && (
         <div
-          className="fixed inset-0 z-50 modal-backdrop flex flex-col items-center pt-20 px-4"
+          className="fixed inset-0 z-50 modal-backdrop flex flex-col items-center pt-24 px-4"
           onClick={(e) => e.target === e.currentTarget && setSearchOpen(false)}
         >
           <form
             onSubmit={handleSearch}
-            className="w-full max-w-lg glass-card rounded-2xl p-4 flex items-center gap-3 border border-primary/20 shadow-[0_0_40px_rgba(221,183,255,0.2)]"
+            className="w-full max-w-lg glass-card rounded-xl p-4 flex items-center gap-3"
+            role="search"
           >
-            <span className="material-symbols-outlined text-outline text-[22px]">search</span>
+            <span className="material-symbols-outlined text-outline text-[20px]">search</span>
             <input
               ref={inputRef}
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar anime, manga..."
-              className="flex-1 bg-transparent outline-none text-base text-on-surface placeholder:text-outline"
-              style={{ fontFamily: 'Orbitron, sans-serif' }}
+              placeholder="Search anime, manga..."
+              className="flex-1 bg-transparent outline-none text-body-md text-on-surface placeholder:text-outline"
             />
-            <button type="button" onClick={() => setSearchOpen(false)} className="btn-ghost p-1">
+            <button
+              type="button"
+              onClick={() => setSearchOpen(false)}
+              className="btn-ghost p-1"
+              aria-label="Close search"
+            >
               <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
           </form>
-          <p className="text-xs text-on-surface-variant mt-3" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-            Presiona ESC o toca fuera para cerrar
-          </p>
         </div>
       )}
     </header>

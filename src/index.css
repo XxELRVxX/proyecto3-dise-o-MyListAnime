@@ -22,6 +22,29 @@
   --color-outline-variant:      #4d4354;
   --color-background:           #0b1326;
 
+  /* ── Variables para estilos inline ── */
+  --c-card-bg:        rgba(23,31,51,0.92);
+  --c-card-border:    rgba(77,67,84,0.5);
+  --c-input-bg:       rgba(23,31,51,0.8);
+  --c-overlay-dark:   rgba(11,19,38,0.85);
+  --c-overlay-grad:   linear-gradient(to bottom, rgba(11,19,38,0.78) 0%, rgba(11,19,38,0.68) 30%, rgba(11,19,38,0.75) 60%, rgba(11,19,38,0.90) 100%);
+  --c-rank-bg:        rgba(23,31,51,0.85);
+  --c-filter-bg:      rgba(17,25,44,0.95);
+  --c-score-bg:       rgba(0,0,0,0.85);
+  --c-type-bg:        rgba(0,0,0,0.75);
+  --c-hero-grad:      linear-gradient(to right, rgba(11,19,38,0.95) 0%, rgba(11,19,38,0.7) 40%, rgba(11,19,38,0.2) 100%), linear-gradient(to top, rgba(11,19,38,0.8) 0%, transparent 50%);
+  --c-img-grad:       linear-gradient(to top, rgba(11,19,38,0.9) 0%, transparent 45%);
+  --c-hover-bg:       rgba(15,0,30,0.96);
+  /* Variables para estilos inline */
+  --color-surface-rgb:          23,31,51;
+  --color-bg-rgb:               11,19,38;
+  --color-overlay-1:            rgba(11,19,38,0.78);
+  --color-overlay-2:            rgba(11,19,38,0.68);
+  --color-overlay-3:            rgba(11,19,38,0.90);
+  --color-card-bg:              rgba(23,31,51,0.92);
+  --color-card-border:          rgba(77,67,84,0.5);
+  --color-input-bg:             rgba(23,31,51,0.8);
+
   /* Tipografía */
   --font-title:   'Bangers', cursive;
   --font-body:    'Orbitron', sans-serif;
@@ -54,8 +77,30 @@
   --color-outline:            #7c5cbf;
   --color-outline-variant:    #c4aee8;
   --color-background:         #f7f0ff;
+  /* Variables para estilos inline — modo claro */
+  --color-overlay-1:          rgba(240,233,255,0.88);
+  --color-overlay-2:          rgba(240,233,255,0.75);
+  --color-overlay-3:          rgba(240,233,255,0.95);
+  --color-card-bg:            rgba(255,255,255,0.92);
+  --color-card-border:        rgba(196,174,232,0.5);
+  --color-input-bg:           rgba(255,255,255,0.85);
 
   --scrollbar-thumb: linear-gradient(180deg, #6d28d9, #0284c7);
+
+  /* ── Variables para estilos inline — modo claro ── */
+  --c-card-bg:        rgba(255,255,255,0.92);
+  --c-card-border:    rgba(196,174,232,0.5);
+  --c-input-bg:       rgba(255,255,255,0.88);
+  --c-overlay-dark:   rgba(240,233,255,0.88);
+  --c-overlay-grad:   linear-gradient(to bottom, rgba(240,233,255,0.85) 0%, rgba(230,220,248,0.75) 30%, rgba(235,225,252,0.80) 60%, rgba(240,233,255,0.95) 100%);
+  --c-rank-bg:        rgba(244,240,255,0.95);
+  --c-filter-bg:      rgba(244,240,255,0.97);
+  --c-score-bg:       rgba(255,255,255,0.9);
+  --c-type-bg:        rgba(244,240,255,0.85);
+  --c-hero-grad:      linear-gradient(to right, rgba(240,233,255,0.95) 0%, rgba(240,233,255,0.75) 40%, rgba(240,233,255,0.2) 100%), linear-gradient(to top, rgba(240,233,255,0.85) 0%, transparent 50%);
+  --c-img-grad:       linear-gradient(to top, rgba(240,233,255,0.9) 0%, transparent 45%);
+  --c-hover-bg:       rgba(230,215,255,0.96);
+  --c-overlay-dark:   rgba(240,233,255,0.95);
 }
 
 /* ══════════════════════════════════════════════
@@ -310,7 +355,7 @@ h1, h2, h3, .title { font-family: var(--font-title); letter-spacing: 0.04em; }
     color: var(--color-primary);
   }
 
-  /* ── Skeleton ── */
+  /* ── Skeleton (legacy) ── */
   .skeleton {
     background: linear-gradient(90deg,
       rgba(45,52,73,0.8) 25%,
@@ -329,9 +374,73 @@ h1, h2, h3, .title { font-family: var(--font-title); letter-spacing: 0.04em; }
     background-size: 200% 100%;
   }
 
+  /* ── Skeleton shimmer mejorado ── */
+  .skeleton-shimmer {
+    position: relative;
+    overflow: hidden;
+    background: rgba(45,52,73,0.7);
+  }
+  .skeleton-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(221,183,255,0.07) 40%,
+      rgba(93,230,255,0.10) 50%,
+      rgba(221,183,255,0.07) 60%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+  .light .skeleton-shimmer { background: rgba(196,174,232,0.35); }
+  .light .skeleton-shimmer::after {
+    background: linear-gradient(90deg,
+      transparent 0%, rgba(109,40,217,0.08) 50%, transparent 100%
+    );
+    background-size: 200% 100%;
+  }
+
+  /* ── Content filter toggle ── */
+  .filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 99px;
+    border: 1px solid;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: none;
+    transition: all 0.2s;
+    font-family: var(--font-body);
+  }
+  .filter-toggle.active {
+    border-color: rgba(93,230,255,0.5);
+    background: rgba(93,230,255,0.1);
+    color: #5de6ff;
+  }
+  .filter-toggle.inactive {
+    border-color: rgba(255,178,183,0.4);
+    background: rgba(255,178,183,0.08);
+    color: #ffb2b7;
+  }
+
   /* ── Página entrada ── */
   .page-enter {
-    animation: slide-up 0.4s ease-out, fade-in 0.4s ease-out;
+    animation: page-enter-anim 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes page-enter-anim {
+    from {
+      opacity:   0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity:   1;
+      transform: translateY(0);
+    }
   }
 
   /* ── Nav activo ── */
@@ -408,4 +517,416 @@ h1, h2, h3, .title { font-family: var(--font-title); letter-spacing: 0.04em; }
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
+}
+
+
+/* ══════════════════════════════════════════════
+   LOGIN PAGE — animaciones específicas
+══════════════════════════════════════════════ */
+
+/* Fondo de la transición de login */
+.login-transition-bg {
+  background: radial-gradient(ellipse at center, #1a0a36 0%, #0b1326 60%);
+  animation: transition-bg-pulse 2.2s ease-out forwards;
+}
+
+/* Glitch del logo en el panel de login */
+.login-glitch {
+  animation: glitch-box 0.6s steps(2) forwards;
+}
+.login-glitch-text {
+  animation: glitch-text 0.6s steps(2) forwards;
+}
+
+/* Partículas flotantes del panel izquierdo */
+.animate-float-particle {
+  animation: float-particle var(--dur, 3s) ease-in-out infinite;
+}
+
+/* ── Keyframes nuevos ──────────────────────────────── */
+
+@keyframes transition-bg-pulse {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0px)   rotate(0deg);   }
+  33%       { transform: translateY(-18px) rotate(8deg);   }
+  66%       { transform: translateY(-8px)  rotate(-5deg);  }
+}
+
+@keyframes glitch-box {
+  0%   { transform: translate(0, 0);    filter: hue-rotate(0deg); }
+  20%  { transform: translate(-4px, 2px); filter: hue-rotate(90deg); }
+  40%  { transform: translate(4px, -2px); filter: hue-rotate(180deg); }
+  60%  { transform: translate(-2px, 4px); filter: hue-rotate(270deg); }
+  80%  { transform: translate(2px, -4px); filter: hue-rotate(90deg); }
+  100% { transform: translate(0, 0);    filter: hue-rotate(0deg); }
+}
+
+@keyframes glitch-text {
+  0%   { text-shadow: 0 0 16px rgba(221,183,255,0.6); clip-path: none; }
+  25%  { text-shadow: -3px 0 #5de6ff, 3px 0 #ffb2b7, 0 0 16px rgba(221,183,255,0.6); }
+  50%  { text-shadow:  3px 0 #5de6ff, -3px 0 #ffb2b7, 0 0 16px rgba(221,183,255,0.6); }
+  75%  { text-shadow: -2px 0 #ddb7ff, 2px 0 #5de6ff,  0 0 16px rgba(221,183,255,0.6); }
+  100% { text-shadow: 0 0 16px rgba(221,183,255,0.6); }
+}
+
+@keyframes burst-radial {
+  0%   { background: radial-gradient(circle at center, rgba(183,109,255,0.0) 0%, transparent 50%); }
+  30%  { background: radial-gradient(circle at center, rgba(183,109,255,0.5) 0%, rgba(93,230,255,0.2) 40%, transparent 70%); }
+  70%  { background: radial-gradient(circle at center, rgba(183,109,255,0.3) 0%, rgba(93,230,255,0.1) 40%, transparent 70%); }
+  100% { background: radial-gradient(circle at center, rgba(183,109,255,0.0) 0%, transparent 50%); }
+}
+.animate-burst-radial { animation: burst-radial 2.2s ease-out forwards; }
+
+@keyframes shockwave {
+  0%   { transform: scale(0.3); opacity: 0.9; }
+  100% { transform: scale(6);   opacity: 0; }
+}
+.animate-shockwave { animation: shockwave 1.2s ease-out forwards; }
+
+@keyframes login-pop {
+  0%   { transform: scale(0.5) translateY(20px); opacity: 0; }
+  50%  { transform: scale(1.08) translateY(-4px); opacity: 1; }
+  100% { transform: scale(1)   translateY(0);    opacity: 1; }
+}
+.animate-login-pop { animation: login-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both; }
+
+@keyframes petal-fall {
+  0%   { transform: translateY(-2rem) rotate(0deg);   opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateY(110vh)  rotate(360deg); opacity: 0; }
+}
+.animate-petal-fall { animation: petal-fall var(--dur, 1.6s) ease-in forwards; }
+
+/* ══════════════════════════════════════════════
+   HOME — Hero parallax carousel
+══════════════════════════════════════════════ */
+
+/* Content slide-in cuando cambia el slide */
+@keyframes hero-content-in {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.animate-hero-content {
+  animation: hero-content-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Barra de progreso que se llena mientras dura el slide */
+@keyframes hero-progress {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+.animate-hero-progress {
+  animation: hero-progress 6s linear forwards;
+}
+/* spin para loaders inline */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Amaterasu flame animations (Home PosterCard) ── */
+@keyframes flame-l {
+  0%   { d: path("M0,220 C2,200 -1,185 3,170 C5,158 1,145 4,130 C7,115 2,100 5,85 C8,70 3,55 6,40 C9,25 4,12 0,0 L0,220Z"); }
+  100% { d: path("M0,220 C4,198 0,182 5,166 C8,152 3,138 7,122 C11,107 5,92 8,76 C12,61 6,46 10,32 C13,19 7,8 0,0 L0,220Z"); }
+}
+@keyframes flame-l2 {
+  0%   { d: path("M0,220 C5,195 3,178 7,162 C10,148 6,132 9,118 C12,104 7,88 11,72 C14,58 9,42 12,28 C14,16 8,6 0,0 L0,220Z"); }
+  100% { d: path("M0,220 C8,192 4,175 10,158 C13,143 8,127 12,112 C16,97 10,81 14,65 C17,51 12,35 15,21 C17,11 10,4 0,0 L0,220Z"); }
+}
+@keyframes flame-r {
+  0%   { d: path("M148,220 C146,200 149,185 145,170 C143,158 147,145 144,130 C141,115 146,100 143,85 C140,70 145,55 142,40 C139,25 144,12 148,0 L148,220Z"); }
+  100% { d: path("M148,220 C144,198 148,182 143,166 C140,152 145,138 141,122 C137,107 143,92 140,76 C136,61 142,46 138,32 C135,19 141,8 148,0 L148,220Z"); }
+}
+@keyframes flame-r2 {
+  0%   { d: path("M148,220 C143,195 145,178 141,162 C138,148 142,132 139,118 C136,104 141,88 137,72 C134,58 139,42 136,28 C134,16 140,6 148,0 L148,220Z"); }
+  100% { d: path("M148,220 C140,192 144,175 138,158 C135,143 140,127 136,112 C132,97 138,81 134,65 C131,51 136,35 133,21 C131,11 138,4 148,0 L148,220Z"); }
+}
+@keyframes flame-b {
+  0%   { d: path("M0,220 C20,215 15,210 35,213 C50,216 45,210 65,214 C80,217 75,211 95,214 C110,217 105,211 125,214 C135,216 140,212 148,220 Z"); }
+  100% { d: path("M0,220 C18,213 22,207 40,211 C55,214 48,208 68,212 C83,215 78,209 98,212 C113,215 108,209 128,212 C138,214 142,210 148,220 Z"); }
+}
+@keyframes border-pulse {
+  0%   { stroke-opacity: 0.4; }
+  100% { stroke-opacity: 0.9; }
+}
+
+/* ── Catalog card cascade ── */
+@keyframes card-cascade-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.93);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Modo diurno — overrides para parallax y fondos inline ── */
+.light .parallax-overlay {
+  background: linear-gradient(to bottom,
+    rgba(240,233,255,0.82) 0%, rgba(230,220,248,0.72) 30%,
+    rgba(235,225,252,0.78) 60%, rgba(240,233,255,0.94) 100%
+  ) !important;
+}
+.light .page-enter {
+  background-color: var(--color-background);
+}
+/* Cards en modo claro */
+.light [style*="rgba(23,31,51"] {
+  background: rgba(255,255,255,0.92) !important;
+}
+
+/* ── Modo claro — fixes de legibilidad ── */
+.light .text-on-surface-variant { color: var(--color-on-surface-variant) !important; }
+
+/* Cards de Home en modo claro */
+.light .glass-card {
+  background: rgba(255,255,255,0.88) !important;
+  border-color: rgba(109,40,217,0.2) !important;
+  color: var(--color-on-surface);
+}
+
+/* Texto dentro de las secciones */
+.light .text-on-surface { color: var(--color-on-surface) !important; }
+
+/* Fondo de secciones entre hero y footer */
+.light section, .light .page-enter {
+  background-color: transparent;
+}
+
+/* Score/type badges en modo claro */
+.light [style*="rgba(0,0,0,0.85)"],
+.light [style*="var(--c-score-bg)"] {
+  background: rgba(255,255,255,0.9) !important;
+  color: var(--color-on-surface) !important;
+  border-color: rgba(109,40,217,0.3) !important;
+}
+
+/* Parallax en modo claro — imagen más tenue */
+.light .parallax-img {
+  opacity: 0.25;
+}
+
+/* ── Modo claro — fixes de legibilidad en cards ── */
+
+/* Títulos de sección (EN TENDENCIA, TEMPORADA ACTUAL) */
+.light .text-headline-sm,
+.light h2,
+.light .font-semibold {
+  color: var(--color-on-surface);
+}
+
+/* Score badge en cards — fondo blanco texto oscuro */
+.light [style*="--c-score-bg"],
+.light [style*="rgba(0,0,0,0.85)"],
+.light [style*="var(--c-score-bg)"] {
+  background: rgba(255,255,255,0.95) !important;
+  color: #1e0a3c !important;
+  border-color: rgba(109,40,217,0.4) !important;
+}
+
+/* Type/eps badge */
+.light [style*="--c-type-bg"],
+.light [style*="var(--c-type-bg)"] {
+  background: rgba(255,255,255,0.92) !important;
+  color: #3b2468 !important;
+  border-color: rgba(109,40,217,0.25) !important;
+}
+
+/* Texto dentro de cards del catálogo */
+.light [style*="var(--color-on-surface"] {
+  color: var(--color-on-surface) !important;
+}
+
+/* Gradiente overlay de imágenes — más suave en modo claro */
+.light [style*="var(--c-img-grad)"] {
+  background: linear-gradient(to top, rgba(240,233,255,0.85) 0%, transparent 40%) !important;
+}
+
+/* Texto de géneros en cards */
+.light [style*="rgba(221,183,255,0.6)"] {
+  color: var(--color-on-surface-variant) !important;
+}
+
+/* Títulos de cards */
+.light [style*="var(--color-on-surface, #dae2fd)"] {
+  color: var(--color-on-surface) !important;
+}
+
+/* SectionHeader subtítulo */
+.light .text-body-sm,
+.light .text-on-surface-variant {
+  color: var(--color-on-surface-variant) !important;
+}
+
+/* Cards del home — fondo claro con texto oscuro */
+.light [style*="var(--c-card-bg)"] {
+  background: rgba(255,255,255,0.92) !important;
+  color: var(--color-on-surface) !important;
+}
+
+/* Bordes de cards en modo claro */
+.light [style*="var(--c-card-border)"] {
+  border-color: rgba(196,174,232,0.5) !important;
+}
+
+/* ── Badges de score y tipo en modo claro ── */
+.light .score-badge {
+  background: rgba(255,255,255,0.95) !important;
+  border-color: rgba(180,130,0,0.4) !important;
+  color: #7a5500 !important;
+}
+.light .score-badge .material-symbols-outlined {
+  color: #b8860b !important;
+}
+.light .type-badge {
+  background: rgba(255,255,255,0.9) !important;
+  border-color: rgba(109,40,217,0.3) !important;
+  color: var(--color-primary) !important;
+}
+
+/* Títulos de sección Home en modo claro */
+.light .text-headline-sm { color: var(--color-on-surface) !important; }
+.light .text-secondary   { color: var(--color-secondary) !important; }
+
+/* Título de card en modo claro */
+.light [class*="text-on-surface"],
+.light p.text-on-surface { color: var(--color-on-surface) !important; }
+
+/* ── Home secciones modo claro — fondo semitransparente para legibilidad ── */
+.light .home-section {
+  background: rgba(240,233,255,0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 16px 12px;          
+  margin-bottom: 2.5rem !important;
+  overflow-x: auto;           
+}
+
+.light .section-header h2 {
+  color: var(--color-on-surface) !important;
+  text-shadow: none !important;
+}
+
+.light .section-header p {
+  color: var(--color-on-surface-variant) !important;
+}
+
+.light .section-header a {
+  color: var(--color-primary) !important;
+}
+
+/* Divider en modo claro */
+.light .bg-gradient-to-r {
+  opacity: 0.3;
+}
+
+/* ── Rankings modo claro ── */
+.light [style*="var(--c-rank-bg)"] {
+  background: rgba(255,255,255,0.88) !important;
+  border-color: rgba(196,174,232,0.4) !important;
+  color: var(--color-on-surface) !important;
+}
+
+/* Texto de filas de ranking */
+.light [style*="var(--color-on-surface)"] {
+  color: var(--color-on-surface) !important;
+}
+
+/* Número de rank #4, #5... */
+.light [style*="var(--color-outline)"] {
+  color: var(--color-outline) !important;
+}
+
+/* Top 3 filas con gradiente */
+.light [style*="rgba(221,183,255,0.07)"] {
+  background: linear-gradient(90deg, rgba(109,40,217,0.08) 0%, rgba(255,255,255,0.7) 100%) !important;
+  border-color: rgba(109,40,217,0.2) !important;
+}
+
+/* Genre chips dentro de ranking */
+.light [style*="rgba(77,67,84,0.6)"] {
+  border-color: rgba(196,174,232,0.6) !important;
+  color: var(--color-on-surface-variant) !important;
+}
+
+/* Status "Finalizado" */
+.light [style*="var(--color-on-surface-variant)"] {
+  color: var(--color-on-surface-variant) !important;
+}
+
+/* Tab activo de categoría */
+.light [style*="#5de6ff"] {
+  color: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+}
+
+/* Scrollable tabs border */
+.light [style*="rgba(77,67,84,0.35)"] {
+  border-color: rgba(196,174,232,0.5) !important;
+}
+
+/* ── Rankings filas modo claro — clase directa ── */
+.light .rank-row {
+  background: rgba(255,255,255,0.82) !important;
+  border-color: rgba(196,174,232,0.35) !important;
+}
+.light .rank-row:hover {
+  background: rgba(255,255,255,0.96) !important;
+  border-color: rgba(109,40,217,0.3) !important;
+}
+/* Si quieres cambiar la transparencia manualmente, editá el 0.82 de arriba */
+/* 0.5 = muy transparente | 0.82 = semi | 1.0 = sólido blanco */
+
+/* ── Catalog title glitch effect ── */
+.catalog-glitch-title {
+  animation: catalog-glitch 5s infinite;
+  display: inline-block;
+}
+
+.glitch-active .catalog-glitch-title {
+  animation: catalog-glitch 0.3s infinite;
+}
+
+@keyframes catalog-glitch {
+  0%, 80%, 100% {
+    transform: none;
+    filter: none;
+  }
+  81% {
+    transform: skew(-2deg) translateX(-3px);
+    filter: drop-shadow(3px 0 #5de6ff) drop-shadow(-3px 0 #ffb2b7);
+  }
+  82% {
+    transform: skew(2deg) translateX(3px);
+    filter: drop-shadow(-3px 0 #5de6ff) drop-shadow(3px 0 #ddb7ff);
+  }
+  83% {
+    transform: none;
+    filter: none;
+  }
+  84% {
+    transform: translateX(-2px) skew(1deg);
+    filter: drop-shadow(2px 0 #ffb2b7);
+  }
+  85% {
+    transform: none;
+    filter: none;
+  }
+}
+
+/* ── Catalog glitch — versión infinita del login-glitch ── */
+.catalog-title-wrap .login-glitch {
+  animation: glitch-box 4s ease-in-out infinite;
+  animation-delay: 2s;
+}
+.catalog-title-wrap .login-glitch-text {
+  animation: glitch-text 4s ease-in-out infinite;
+  animation-delay: 2s;
 }

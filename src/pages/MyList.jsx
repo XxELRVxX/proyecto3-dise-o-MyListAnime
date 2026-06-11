@@ -6,20 +6,20 @@ import StarRating from '../components/ui/StarRating'
 
 const STATUSES = {
   anime: [
-    { value: 'all',       label: 'Todos',       icon: 'list' },
-    { value: 'watching',  label: 'Viendo',      icon: 'play_arrow',   color: 'var(--neon-2)' },
-    { value: 'completed', label: 'Completado',  icon: 'check_circle', color: 'var(--neon-green)' },
-    { value: 'planned',   label: 'Planeado',    icon: 'schedule',     color: 'var(--text-2)' },
-    { value: 'on_hold',   label: 'En pausa',    icon: 'pause',        color: 'var(--neon)' },
-    { value: 'dropped',   label: 'Abandonado',  icon: 'cancel',       color: 'var(--neon-3)' },
+    { value: 'all',       label: 'All',       icon: 'list' },
+    { value: 'watching',  label: 'Watching',      icon: 'play_arrow',   color: 'var(--neon-2)' },
+    { value: 'completed', label: 'Completed',  icon: 'check_circle', color: 'var(--neon-green)' },
+    { value: 'planned',   label: 'Planned',    icon: 'schedule',     color: 'var(--text-2)' },
+    { value: 'on_hold',   label: 'On Hold',    icon: 'pause',        color: 'var(--neon)' },
+    { value: 'dropped',   label: 'Dropped',  icon: 'cancel',       color: 'var(--neon-3)' },
   ],
   manga: [
-    { value: 'all',       label: 'Todos',       icon: 'list' },
-    { value: 'reading',   label: 'Leyendo',     icon: 'menu_book',    color: 'var(--neon-2)' },
-    { value: 'completed', label: 'Completado',  icon: 'check_circle', color: 'var(--neon-green)' },
-    { value: 'planned',   label: 'Planeado',    icon: 'schedule',     color: 'var(--text-2)' },
-    { value: 'on_hold',   label: 'En pausa',    icon: 'pause',        color: 'var(--neon)' },
-    { value: 'dropped',   label: 'Abandonado',  icon: 'cancel',       color: 'var(--neon-3)' },
+    { value: 'all',       label: 'All',       icon: 'list' },
+    { value: 'reading',   label: 'Reading',     icon: 'menu_book',    color: 'var(--neon-2)' },
+    { value: 'completed', label: 'Completed',  icon: 'check_circle', color: 'var(--neon-green)' },
+    { value: 'planned',   label: 'Planned',    icon: 'schedule',     color: 'var(--text-2)' },
+    { value: 'on_hold',   label: 'On Hold',    icon: 'pause',        color: 'var(--neon)' },
+    { value: 'dropped',   label: 'Dropped',  icon: 'cancel',       color: 'var(--neon-3)' },
   ]
 }
 
@@ -198,9 +198,9 @@ export default function MyList() {
   if (!user) return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', textAlign: 'center', gap: 16, padding: 24 }}>
       <span className="material-symbols-outlined" style={{ fontSize: 64, color: 'var(--text-3)' }}>lock</span>
-      <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, letterSpacing: 1, color: 'var(--text)' }}>INICIA SESIÓN</div>
-      <p style={{ fontSize: 14, color: 'var(--text-2)', maxWidth: 320 }}>Guarda anime y manga, califica y lleva tu progreso</p>
-      <Link to="/login" className="btn btn-primary">Iniciar sesión</Link>
+      <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, letterSpacing: 1, color: 'var(--text)' }}>LOG IN</div>
+      <p style={{ fontSize: 14, color: 'var(--text-2)', maxWidth: 320 }}>Save anime and manga, rate them, and track your progress</p>
+      <Link to="/login" className="btn btn-primary">Log In</Link>
     </div>
   )
 

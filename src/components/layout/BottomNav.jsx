@@ -4,10 +4,10 @@ import { useAuth } from '../../context/AuthContext'
 
 const NAV_ITEMS = [
   { to: '/',         icon: 'home',                  label: 'Home' },
-  { to: '/catalog',  icon: 'grid_view',             label: 'Catálogo' },
+  { to: '/catalog',  icon: 'grid_view',             label: 'Catalog' },
   { to: '/rankings', icon: 'monitoring',            label: 'Rankings' },
-  { to: '/my-list',  icon: 'format_list_bulleted',  label: 'Mi Lista' },
-  { to: '/profile',  icon: 'person',                label: 'Perfil' },
+  { to: '/my-list',  icon: 'format_list_bulleted',  label: 'My List' },
+  { to: '/profile',  icon: 'person',                label: 'Profile' },
 ]
 
 export default function BottomNav() {

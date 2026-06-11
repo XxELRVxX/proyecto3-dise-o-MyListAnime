@@ -5,18 +5,18 @@ import StarRating from '../ui/StarRating'
 
 const STATUS_OPTIONS = {
   anime: [
-    { value: 'watching', label: 'Viendo', icon: 'play_arrow', color: 'text-secondary' },
-    { value: 'completed', label: 'Completado', icon: 'check_circle', color: 'text-green-400' },
-    { value: 'planned', label: 'Planeado', icon: 'schedule', color: 'text-on-surface-variant' },
-    { value: 'on_hold', label: 'En pausa', icon: 'pause', color: 'text-primary' },
-    { value: 'dropped', label: 'Abandonado', icon: 'cancel', color: 'text-tertiary' },
+    { value: 'watching', label: 'Watching', icon: 'play_arrow', color: 'text-secondary' },
+    { value: 'completed', label: 'Completed', icon: 'check_circle', color: 'text-green-400' },
+    { value: 'planned', label: 'Planned', icon: 'schedule', color: 'text-on-surface-variant' },
+    { value: 'on_hold', label: 'On Hold', icon: 'pause', color: 'text-primary' },
+    { value: 'dropped', label: 'Dropped', icon: 'cancel', color: 'text-tertiary' },
   ],
   manga: [
-    { value: 'reading', label: 'Leyendo', icon: 'menu_book', color: 'text-secondary' },
-    { value: 'completed', label: 'Completado', icon: 'check_circle', color: 'text-green-400' },
-    { value: 'planned', label: 'Planeado', icon: 'schedule', color: 'text-on-surface-variant' },
-    { value: 'on_hold', label: 'En pausa', icon: 'pause', color: 'text-primary' },
-    { value: 'dropped', label: 'Abandonado', icon: 'cancel', color: 'text-tertiary' },
+    { value: 'reading', label: 'Reading', icon: 'menu_book', color: 'text-secondary' },
+    { value: 'completed', label: 'Completed', icon: 'check_circle', color: 'text-green-400' },
+    { value: 'planned', label: 'Planned', icon: 'schedule', color: 'text-on-surface-variant' },
+    { value: 'on_hold', label: 'On Hold', icon: 'pause', color: 'text-primary' },
+    { value: 'dropped', label: 'Dropped', icon: 'cancel', color: 'text-tertiary' },
   ],
 }
 
@@ -124,7 +124,7 @@ export default function AddToListModal({ entry, onClose }) {
             {/* Status */}
             <div>
               <label className="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-3 block">
-                Estado
+                Status
               </label>
               <div className="grid grid-cols-2 gap-2">
                 {statusOptions.map(opt => (
@@ -151,7 +151,7 @@ export default function AddToListModal({ entry, onClose }) {
             {(entry.episodes || entry.chapters) ? (
               <div>
                 <label className="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-2 block">
-                  Progreso ({entry.type === 'anime' ? 'Episodios' : 'Capítulos'})
+                  Progress ({entry.type === 'anime' ? 'Episodes' : 'Chapters'})
                 </label>
                 <div className="flex items-center gap-3">
                   <input
@@ -178,12 +178,12 @@ export default function AddToListModal({ entry, onClose }) {
             {/* Score */}
             <div>
               <label className="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-3 block">
-                Tu Calificación
+                Your Rating
               </label>
               <StarRating value={score} onChange={setScore} size="md" />
               {score > 0 && (
                 <button onClick={() => setScore(0)} className="text-xs text-on-surface-variant hover:text-tertiary mt-2 transition-colors">
-                  Quitar calificación
+                  Remove rating
                 </button>
               )}
             </div>
@@ -197,7 +197,7 @@ export default function AddToListModal({ entry, onClose }) {
                   className="flex items-center gap-2 px-4 py-2.5 rounded border border-tertiary/30 text-tertiary text-sm font-medium hover:bg-tertiary/10 transition-colors disabled:opacity-50"
                 >
                   <span className="material-symbols-outlined text-[18px]">delete</span>
-                  Eliminar
+                  Remove
                 </button>
               )}
               <button
