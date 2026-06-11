@@ -6,122 +6,243 @@ import StarRating from '../components/ui/StarRating'
 
 const STATUSES = {
   anime: [
-    { value: 'all', label: 'Todos', icon: 'list' },
-    { value: 'watching', label: 'Viendo', icon: 'play_arrow', color: 'text-secondary' },
-    { value: 'completed', label: 'Completado', icon: 'check_circle', color: 'text-green-400' },
-    { value: 'planned', label: 'Planeado', icon: 'schedule', color: 'text-on-surface-variant' },
-    { value: 'on_hold', label: 'En pausa', icon: 'pause', color: 'text-primary' },
-    { value: 'dropped', label: 'Abandonado', icon: 'cancel', color: 'text-tertiary' },
+    { value: 'all',       label: 'All',       icon: 'list' },
+    { value: 'watching',  label: 'Watching',      icon: 'play_arrow',   color: 'var(--neon-2)' },
+    { value: 'completed', label: 'Completed',  icon: 'check_circle', color: 'var(--neon-green)' },
+    { value: 'planned',   label: 'Planned',    icon: 'schedule',     color: 'var(--text-2)' },
+    { value: 'on_hold',   label: 'On Hold',    icon: 'pause',        color: 'var(--neon)' },
+    { value: 'dropped',   label: 'Dropped',  icon: 'cancel',       color: 'var(--neon-3)' },
   ],
   manga: [
-    { value: 'all', label: 'Todos', icon: 'list' },
-    { value: 'reading', label: 'Leyendo', icon: 'menu_book', color: 'text-secondary' },
-    { value: 'completed', label: 'Completado', icon: 'check_circle', color: 'text-green-400' },
-    { value: 'planned', label: 'Planeado', icon: 'schedule', color: 'text-on-surface-variant' },
-    { value: 'on_hold', label: 'En pausa', icon: 'pause', color: 'text-primary' },
-    { value: 'dropped', label: 'Abandonado', icon: 'cancel', color: 'text-tertiary' },
-  ],
+    { value: 'all',       label: 'All',       icon: 'list' },
+    { value: 'reading',   label: 'Reading',     icon: 'menu_book',    color: 'var(--neon-2)' },
+    { value: 'completed', label: 'Completed',  icon: 'check_circle', color: 'var(--neon-green)' },
+    { value: 'planned',   label: 'Planned',    icon: 'schedule',     color: 'var(--text-2)' },
+    { value: 'on_hold',   label: 'On Hold',    icon: 'pause',        color: 'var(--neon)' },
+    { value: 'dropped',   label: 'Dropped',  icon: 'cancel',       color: 'var(--neon-3)' },
+  ]
+}
+
+const STATUS_BORDER = {
+  watching: 'var(--neon-2)', reading: 'var(--neon-2)',
+  completed: '#4ade80', planned: 'var(--border-2)',
+  on_hold: 'var(--neon)', dropped: 'var(--neon-3)'
+}
+
+function ListEntry({ entry, onRemove, onScoreChange, onProgressChange }) {
+  const [editProgress, setEditProgress] = useState(false)
+  const [tempProgress, setTempProgress] = useState(entry.progress || 0)
+  const max = entry.type === 'anime' ? (entry.episodes || 0) : (entry.chapters || 0)
+  const pct = max > 0 ? Math.min(100, ((entry.progress || 0) / max) * 100) : 0
+
+  const save = () => { onProgressChange(entry, tempProgress); setEditProgress(false) }
+
+  return (
+    <div style={{
+      display: 'flex', gap: 12, padding: 14,
+      background: 'var(--surface)', border: '1px solid var(--border)',
+      borderLeft: `3px solid ${STATUS_BORDER[entry.status] || 'var(--border-2)'}`,
+      borderRadius: 'var(--radius-lg)', transition: 'border-color .2s, background .2s',
+    }}
+    onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(192,132,252,0.25)'; e.currentTarget.style.background = 'var(--surface-2)' }}
+    onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--surface)' }}
+    >
+      {/* Cover */}
+      <Link to={`/${entry.type}/${entry.id}`} style={{ flexShrink: 0 }}>
+        <img src={entry.image} alt={entry.title}
+          style={{ width: 48, height: 64, objectFit: 'cover', borderRadius: 6 }}
+          onError={e => { e.target.src = 'https://placehold.co/48x64/1a1d2e/c084fc?text=?' }}
+        />
+      </Link>
+
+      {/* Info */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <Link to={`/${entry.type}/${entry.id}`}>
+          <div style={{
+            fontFamily: 'var(--font-cond)', fontSize: 15, fontWeight: 700, color: 'var(--text)',
+            overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical',
+            marginBottom: 6, transition: 'color .15s'
+          }}
+          onMouseEnter={e => e.target.style.color = 'var(--neon)'}
+          onMouseLeave={e => e.target.style.color = 'var(--text)'}
+          >{entry.title}</div>
+        </Link>
+
+        {/* Progress */}
+        <div style={{ marginBottom: 4 }}>
+          {editProgress ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <input type="number" min={0} max={max || 9999} value={tempProgress}
+                onChange={e => setTempProgress(Math.max(0, parseInt(e.target.value) || 0))}
+                className="av-input" style={{ width: 60, padding: '3px 8px', fontSize: 12, textAlign: 'center', height: 28 }}
+              />
+              <span style={{ fontSize: 12, color: 'var(--text-2)' }}>/ {max || '?'}</span>
+              <button onClick={save} style={{ fontSize: 12, fontWeight: 700, color: 'var(--neon-2)', background: 'none', border: 'none', cursor: 'pointer' }}>OK</button>
+              <button onClick={() => setEditProgress(false)} style={{ fontSize: 12, color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>
+            </div>
+          ) : (
+            <button onClick={() => setEditProgress(true)} style={{
+              display: 'flex', alignItems: 'center', gap: 5, fontSize: 12,
+              color: 'var(--text-2)', background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+              transition: 'color .15s'
+            }}
+            onMouseEnter={e => e.currentTarget.style.color = 'var(--neon-2)'}
+            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-2)'}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: 14 }}>edit</span>
+              {entry.progress || 0} / {max || '?'} {entry.type === 'anime' ? 'eps' : 'ch'}
+            </button>
+          )}
+        </div>
+
+        {/* Progress bar */}
+        {max > 0 && (
+          <div className="progress-bar" style={{ marginBottom: 6 }}>
+            <div className="progress-fill" style={{ width: `${pct}%` }} />
+          </div>
+        )}
+
+        {/* Star rating */}
+        <StarRating value={entry.score || 0} onChange={score => onScoreChange(entry, score)} size="sm" />
+      </div>
+
+      {/* Delete */}
+      <button onClick={() => onRemove(entry)} style={{
+        flexShrink: 0, width: 32, height: 32, borderRadius: 8, alignSelf: 'center',
+        background: 'none', border: '1px solid var(--border)', color: 'var(--text-3)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all .2s'
+      }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-3)'; e.currentTarget.style.color = 'var(--neon-3)'; e.currentTarget.style.background = 'rgba(244,114,182,0.08)' }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-3)'; e.currentTarget.style.background = 'none' }}
+      >
+        <span className="material-symbols-outlined" style={{ fontSize: 16 }}>delete</span>
+      </button>
+    </div>
+  )
+}
+
+function GridEntry({ entry, onRemove }) {
+  return (
+    <div style={{
+      background: 'var(--surface)', border: '1px solid var(--border)',
+      borderRadius: 'var(--radius-lg)', overflow: 'hidden', position: 'relative', transition: 'all .2s'
+    }}
+    onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(192,132,252,0.4)'; e.currentTarget.style.transform = 'translateY(-3px)' }}
+    onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = '' }}
+    >
+      <Link to={`/${entry.type}/${entry.id}`}>
+        <div style={{ position: 'relative' }}>
+          <img src={entry.image} alt={entry.title}
+            style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', display: 'block' }}
+            onError={e => { e.target.src = 'https://placehold.co/160x213/1a1d2e/c084fc?text=?' }}
+          />
+          {entry.score > 0 && (
+            <div style={{
+              position: 'absolute', bottom: 8, left: 8,
+              background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)',
+              borderRadius: 6, padding: '2px 7px', display: 'flex', alignItems: 'center', gap: 3,
+              border: '1px solid rgba(251,191,36,0.3)'
+            }}>
+              <span className="material-symbols-outlined" style={{ fontSize: 11, fontVariationSettings: "'FILL' 1", color: '#fbbf24' }}>star</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#fbbf24', fontFamily: 'var(--font-cond)' }}>{entry.score}</span>
+            </div>
+          )}
+        </div>
+        <div style={{ padding: '8px 10px' }}>
+          <div style={{
+            fontFamily: 'var(--font-cond)', fontSize: 13, fontWeight: 700, color: 'var(--text)',
+            overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical'
+          }}>{entry.title}</div>
+        </div>
+      </Link>
+    </div>
+  )
 }
 
 export default function MyList() {
   const { user } = useAuth()
   const [mediaType, setMediaType] = useState('anime')
-  const [status, setStatus] = useState('all')
-  const [list, setList] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [searchQ, setSearchQ] = useState('')
-  const [view, setView] = useState('list') // 'list' | 'grid'
+  const [status, setStatus]       = useState('all')
+  const [list, setList]           = useState([])
+  const [loading, setLoading]     = useState(true)
+  const [searchQ, setSearchQ]     = useState('')
+  const [view, setView]           = useState('list')
 
-  useEffect(() => {
-    loadList()
-  }, [user, mediaType])
+  useEffect(() => { loadList() }, [user, mediaType])
 
   const loadList = async () => {
     if (!user) return
     setLoading(true)
-    try {
-      const data = await getUserList(user.uid, mediaType)
-      setList(data)
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
+    try { setList(await getUserList(user.uid, mediaType)) }
+    catch (err) { console.error(err) }
+    finally { setLoading(false) }
   }
 
   const handleRemove = async (entry) => {
     if (!confirm(`¿Eliminar "${entry.title}" de tu lista?`)) return
     await removeFromList(user.uid, entry.type, entry.id)
-    setList(prev => prev.filter(e => e.id !== entry.id || e.type !== entry.type))
+    setList(prev => prev.filter(e => !(e.id === entry.id && e.type === entry.type)))
   }
-
-  const handleScoreUpdate = async (entry, score) => {
-    await updateListEntry(user.uid, entry.type, entry.id, { score })
-    setList(prev => prev.map(e =>
-      e.id === entry.id && e.type === entry.type ? { ...e, score } : e
-    ))
-  }
-
-  const handleProgressUpdate = async (entry, progress) => {
-    await updateListEntry(user.uid, entry.type, entry.id, { progress })
-    setList(prev => prev.map(e =>
-      e.id === entry.id && e.type === entry.type ? { ...e, progress } : e
-    ))
-  }
+  const handleScoreUpdate    = async (entry, score)    => { await updateListEntry(user.uid, entry.type, entry.id, { score });    setList(prev => prev.map(e => e.id === entry.id && e.type === entry.type ? { ...e, score } : e)) }
+  const handleProgressUpdate = async (entry, progress) => { await updateListEntry(user.uid, entry.type, entry.id, { progress }); setList(prev => prev.map(e => e.id === entry.id && e.type === entry.type ? { ...e, progress } : e)) }
 
   const filtered = list.filter(e => {
     if (status !== 'all' && e.status !== status) return false
     if (searchQ && !e.title?.toLowerCase().includes(searchQ.toLowerCase())) return false
     return true
   })
-
   const statuses = STATUSES[mediaType]
-
-  // Count per status
-  const counts = {}
+  const counts   = {}
   list.forEach(e => { counts[e.status] = (counts[e.status] || 0) + 1 })
 
-  if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-        <span className="material-symbols-outlined text-[64px] text-outline mb-4">lock</span>
-        <h2 className="text-headline-sm text-on-surface mb-2">Inicia sesión para ver tu lista</h2>
-        <p className="text-body-sm text-on-surface-variant mb-6">Guarda anime y manga, califica y lleva tu progreso</p>
-        <Link to="/login" className="btn-primary">Iniciar sesión</Link>
-      </div>
-    )
-  }
+  if (!user) return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', textAlign: 'center', gap: 16, padding: 24 }}>
+      <span className="material-symbols-outlined" style={{ fontSize: 64, color: 'var(--text-3)' }}>lock</span>
+      <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, letterSpacing: 1, color: 'var(--text)' }}>LOG IN</div>
+      <p style={{ fontSize: 14, color: 'var(--text-2)', maxWidth: 320 }}>Save anime and manga, rate them, and track your progress</p>
+      <Link to="/login" className="btn btn-primary">Log In</Link>
+    </div>
+  )
 
   return (
-    <div className="page-enter max-w-screen-xl mx-auto px-gutter py-6">
+    <div className="page-enter">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
         <div>
-          <h1 className="text-headline-md font-headline-md text-on-surface">Mi Lista</h1>
-          <p className="text-body-sm text-on-surface-variant">{list.length} entradas en total</p>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 36, letterSpacing: 2, color: 'var(--text)', marginBottom: 2 }}>MI LISTA</h1>
+          <p style={{ fontSize: 14, color: 'var(--text-2)' }}>{list.length} entradas en total</p>
         </div>
-        <div className="flex gap-2">
-          <button onClick={() => setView('list')}
-            className={`p-2 rounded ${view === 'list' ? 'text-primary' : 'text-on-surface-variant'}`}>
-            <span className="material-symbols-outlined">view_list</span>
-          </button>
-          <button onClick={() => setView('grid')}
-            className={`p-2 rounded ${view === 'grid' ? 'text-primary' : 'text-on-surface-variant'}`}>
-            <span className="material-symbols-outlined">grid_view</span>
-          </button>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {['list', 'grid'].map(v => (
+            <button key={v} onClick={() => setView(v)} style={{
+              width: 36, height: 36, borderRadius: 'var(--radius)',
+              background: view === v ? 'rgba(192,132,252,0.15)' : 'var(--surface)',
+              border: view === v ? '1px solid var(--neon)' : '1px solid var(--border)',
+              color: view === v ? 'var(--neon)' : 'var(--text-2)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
+            }}>
+              <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+                {v === 'list' ? 'view_list' : 'grid_view'}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 
       {/* Media type */}
-      <div className="flex gap-2 mb-4">
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
         {['anime', 'manga'].map(t => (
-          <button key={t} onClick={() => { setMediaType(t); setStatus('all') }}
-            className={`px-5 py-2.5 rounded-full font-semibold text-sm capitalize transition-all duration-200 flex items-center gap-2
-              ${mediaType === t
-                ? 'bg-primary text-on-primary shadow-[0_0_15px_rgba(221,183,255,0.4)]'
-                : 'glass-card text-on-surface-variant border border-outline-variant/30 hover:text-on-surface'
-              }`}>
-            <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+          <button key={t} onClick={() => { setMediaType(t); setStatus('all') }} style={{
+            display: 'flex', alignItems: 'center', gap: 7,
+            padding: '8px 20px', borderRadius: 99, cursor: 'pointer',
+            fontFamily: 'var(--font-cond)', fontSize: 14, fontWeight: 700,
+            letterSpacing: 0.5, textTransform: 'capitalize', transition: 'all .2s',
+            border: mediaType === t ? 'none' : '1px solid var(--border-2)',
+            background: mediaType === t ? 'var(--neon)' : 'var(--surface)',
+            color: mediaType === t ? '#fff' : 'var(--text-2)',
+            boxShadow: mediaType === t ? '0 0 16px rgba(192,132,252,0.35)' : 'none'
+          }}>
+            <span className="material-symbols-outlined" style={{ fontSize: 15, fontVariationSettings: "'FILL' 1" }}>
               {t === 'anime' ? 'movie' : 'auto_stories'}
             </span>
             {t}
@@ -130,177 +251,70 @@ export default function MyList() {
       </div>
 
       {/* Status tabs */}
-      <div className="flex gap-1 mb-4 overflow-x-auto scrollbar-hide pb-1">
+      <div style={{ display: 'flex', gap: 2, marginBottom: 16, borderBottom: '1px solid var(--border)', overflowX: 'auto', scrollbarWidth: 'none' }}>
         {statuses.map(s => (
-          <button
-            key={s.value}
-            onClick={() => setStatus(s.value)}
-            className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded text-sm font-medium transition-all whitespace-nowrap
-              ${status === s.value ? 'text-secondary border-b-2 border-secondary' : 'text-on-surface-variant hover:text-on-surface'}`}
-          >
-            <span className={`material-symbols-outlined text-[16px] ${s.color || ''}`} style={{ fontVariationSettings: "'FILL' 1" }}>{s.icon}</span>
+          <button key={s.value} onClick={() => setStatus(s.value)} style={{
+            flexShrink: 0, display: 'flex', alignItems: 'center', gap: 5,
+            padding: '8px 14px', background: 'none', border: 'none',
+            borderBottom: status === s.value ? `2px solid ${s.color || 'var(--neon)'}` : '2px solid transparent',
+            cursor: 'pointer', fontFamily: 'var(--font-cond)', fontSize: 13, fontWeight: 700,
+            color: status === s.value ? (s.color || 'var(--neon)') : 'var(--text-2)',
+            transition: 'all .15s', whiteSpace: 'nowrap', marginBottom: -1
+          }}>
+            <span className="material-symbols-outlined" style={{ fontSize: 15, fontVariationSettings: "'FILL' 1", color: s.color || 'inherit' }}>{s.icon}</span>
             {s.label}
             {s.value !== 'all' && counts[s.value] !== undefined && (
-              <span className="bg-surface-container-high text-on-surface-variant text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                {counts[s.value]}
-              </span>
+              <span style={{
+                background: 'var(--surface-2)', color: 'var(--text-2)',
+                fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 99
+              }}>{counts[s.value]}</span>
             )}
           </button>
         ))}
       </div>
 
       {/* Search */}
-      <div className="relative mb-6">
-        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
-        <input
-          value={searchQ}
-          onChange={e => setSearchQ(e.target.value)}
-          placeholder="Buscar en tu lista..."
-          className="input-field pl-9 border border-outline-variant rounded"
+      <div style={{ position: 'relative', marginBottom: 24 }}>
+        <span className="material-symbols-outlined" style={{
+          position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
+          color: 'var(--text-3)', fontSize: 18, pointerEvents: 'none'
+        }}>search</span>
+        <input value={searchQ} onChange={e => setSearchQ(e.target.value)}
+          placeholder="Buscar en tu lista..." className="av-input"
+          style={{ paddingLeft: 38 }}
         />
       </div>
 
-      {/* List content */}
+      {/* Content */}
       {loading ? (
-        <div className="flex justify-center py-16">
-          <div className="w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+        <div style={{ display: 'flex', justifyContent: 'center', paddingBlock: 60 }}>
+          <div style={{ width: 36, height: 36, border: '2px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--neon)', borderRadius: '50%', animation: 'spin .8s linear infinite' }} />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <span className="material-symbols-outlined text-[64px] text-outline mb-4">inbox</span>
-          <p className="text-headline-sm text-on-surface-variant">No hay entradas aquí</p>
-          <p className="text-body-sm text-outline mt-2 mb-6">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingBlock: 80, gap: 12, textAlign: 'center' }}>
+          <span className="material-symbols-outlined" style={{ fontSize: 64, color: 'var(--text-3)' }}>inbox</span>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, letterSpacing: 1, color: 'var(--text-2)' }}>
+            {searchQ ? 'SIN RESULTADOS' : 'LISTA VACÍA'}
+          </div>
+          <p style={{ fontSize: 14, color: 'var(--text-3)' }}>
             {searchQ ? 'No coincide con tu búsqueda' : 'Agrega anime y manga desde el catálogo'}
           </p>
-          {!searchQ && <Link to="/catalog" className="btn-primary">Explorar catálogo</Link>}
+          {!searchQ && <Link to="/catalog" className="btn btn-primary" style={{ marginTop: 8 }}>Explorar catálogo</Link>}
         </div>
       ) : view === 'grid' ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {filtered.map(entry => (
-            <GridEntry key={`${entry.type}_${entry.id}`} entry={entry} onRemove={handleRemove} />
-          ))}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: 14 }}>
+          {filtered.map(entry => <GridEntry key={`${entry.type}_${entry.id}`} entry={entry} onRemove={handleRemove} />)}
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {filtered.map(entry => (
-            <ListEntry
-              key={`${entry.type}_${entry.id}`}
-              entry={entry}
-              onRemove={handleRemove}
-              onScoreChange={handleScoreUpdate}
-              onProgressChange={handleProgressUpdate}
-            />
+            <ListEntry key={`${entry.type}_${entry.id}`} entry={entry}
+              onRemove={handleRemove} onScoreChange={handleScoreUpdate} onProgressChange={handleProgressUpdate} />
           ))}
         </div>
       )}
-    </div>
-  )
-}
 
-function GridEntry({ entry, onRemove }) {
-  return (
-    <div className="glass-card rounded-lg overflow-hidden group relative">
-      <Link to={`/${entry.type}/${entry.id}`} style={{ aspectRatio: '3/4' }} className="block relative overflow-hidden">
-        <img src={entry.image} alt={entry.title} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent opacity-80" />
-        {entry.score > 0 && (
-          <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-surface-container/80 backdrop-blur px-2 py-0.5 rounded">
-            <span className="material-symbols-outlined text-[11px] text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-            <span className="text-secondary text-xs font-bold">{entry.score}</span>
-          </div>
-        )}
-      </Link>
-      <div className="p-2">
-        <p className="text-xs font-semibold text-on-surface line-clamp-2">{entry.title}</p>
-      </div>
-    </div>
-  )
-}
-
-function ListEntry({ entry, onRemove, onScoreChange, onProgressChange }) {
-  const [editProgress, setEditProgress] = useState(false)
-  const [tempProgress, setTempProgress] = useState(entry.progress || 0)
-  const maxProgress = entry.type === 'anime' ? (entry.episodes || 0) : (entry.chapters || 0)
-
-  const saveProgress = () => {
-    onProgressChange(entry, tempProgress)
-    setEditProgress(false)
-  }
-
-  const statusColor = {
-    watching: 'border-l-secondary', reading: 'border-l-secondary',
-    completed: 'border-l-green-400',
-    planned: 'border-l-outline',
-    on_hold: 'border-l-primary',
-    dropped: 'border-l-tertiary',
-  }
-
-  return (
-    <div className={`glass-card rounded-xl border-l-4 ${statusColor[entry.status] || 'border-l-outline'} flex gap-3 p-3 transition-all hover:border-primary/30`}>
-      {/* Cover */}
-      <Link to={`/${entry.type}/${entry.id}`} className="flex-shrink-0">
-        <img src={entry.image} alt={entry.title} className="w-12 h-16 object-cover rounded" />
-      </Link>
-
-      {/* Info */}
-      <div className="flex-1 min-w-0">
-        <Link to={`/${entry.type}/${entry.id}`}>
-          <h3 className="font-semibold text-on-surface text-sm line-clamp-1 hover:text-primary transition-colors">{entry.title}</h3>
-        </Link>
-
-        {/* Progress */}
-        <div className="flex items-center gap-2 mt-1">
-          {editProgress ? (
-            <div className="flex items-center gap-2">
-              <input
-                type="number" min={0} max={maxProgress || 9999}
-                value={tempProgress}
-                onChange={e => setTempProgress(Math.max(0, parseInt(e.target.value) || 0))}
-                className="input-field !py-0.5 !px-2 w-16 text-center text-xs border border-outline-variant rounded"
-              />
-              <span className="text-xs text-on-surface-variant">/ {maxProgress || '?'}</span>
-              <button onClick={saveProgress} className="text-secondary text-xs font-medium">OK</button>
-              <button onClick={() => setEditProgress(false)} className="text-on-surface-variant text-xs">✕</button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setEditProgress(true)}
-              className="flex items-center gap-1.5 text-xs text-on-surface-variant hover:text-secondary transition-colors"
-            >
-              <span className="material-symbols-outlined text-[14px]">edit</span>
-              {entry.progress || 0} / {maxProgress || '?'} {entry.type === 'anime' ? 'eps' : 'ch'}
-            </button>
-          )}
-        </div>
-
-        {maxProgress > 0 && (
-          <div className="w-full h-1 bg-outline-variant rounded-full overflow-hidden mt-1.5">
-            <div
-              className="h-full bg-secondary-container shadow-[0_0_6px_#00cbe6] transition-all"
-              style={{ width: `${Math.min(100, ((entry.progress || 0) / maxProgress) * 100)}%` }}
-            />
-          </div>
-        )}
-
-        {/* Score */}
-        <div className="mt-1.5">
-          <StarRating
-            value={entry.score || 0}
-            onChange={score => onScoreChange(entry, score)}
-            size="sm"
-          />
-        </div>
-      </div>
-
-      {/* Actions */}
-      <div className="flex flex-col items-center gap-2 flex-shrink-0">
-        <button
-          onClick={() => onRemove(entry)}
-          className="p-1.5 rounded text-on-surface-variant hover:text-tertiary hover:bg-tertiary/10 transition-colors"
-        >
-          <span className="material-symbols-outlined text-[18px]">delete</span>
-        </button>
-      </div>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   )
 }

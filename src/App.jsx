@@ -1,51 +1,64 @@
-import { Routes, Route } from 'react-router-dom'
-import Header from './components/layout/Header'
-import BottomNav from './components/layout/BottomNav'
+// App.jsx — layout principal con transiciones de página via key de ruta.
+// Al cambiar de ruta, el componente se re-monta y dispara .page-enter en cada página.
 
-// Pages — la Persona 3 las creará; estos son placeholders funcionales
-// para que el proyecto arranque sin errores mientras se desarrolla
-import Home from './pages/Home'
-import Catalog from './pages/Catalog'
-import Rankings from './pages/Rankings'
-import MyList from './pages/MyList'
-import Profile from './pages/Profile'
-import Login from './pages/Login'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { useEffect, useRef }          from 'react'
+import Header      from './components/layout/Header'
+import BottomNav   from './components/layout/BottomNav'
+import Footer      from './components/layout/Footer'
+import MusicPlayer from './components/ui/MusicPlayer'
+import CustomCursor from './components/ui/CustomCursor'
 
-// AnimeDetail lo crea la Persona 3; placeholder hasta que esté listo
-const AnimeDetail = () => (
-  <div className="flex items-center justify-center min-h-[60vh]">
-    <p className="text-on-surface-variant">Detalle — en desarrollo</p>
-  </div>
-)
+import Home        from './pages/Home'
+import Catalog     from './pages/Catalog'
+import Rankings    from './pages/Rankings'
+import MyList      from './pages/MyList'
+import Profile     from './pages/Profile'
+import Login       from './pages/Login'
+import AnimeDetail from './pages/AnimeDetail'
 
 export default function App() {
+  const location = useLocation()
+
+  // Scroll al inicio en cada cambio de página
+  useEffect(() => { window.scrollTo(0, 0) }, [location.pathname])
+
   return (
-    <div className="min-h-screen bg-background text-on-surface font-inter">
-      {/* Barra superior — siempre visible */}
+    <div className="min-h-screen bg-background text-on-surface"
+         style={{ fontFamily: 'Orbitron, sans-serif' }}>
+
+      <CustomCursor />
+      <MusicPlayer />
       <Header />
 
-      {/* Contenido principal — padding-top para que no quede debajo del header */}
       <main className="pt-16 pb-20 md:pb-0">
-        <Routes>
-          <Route path="/"            element={<Home />} />
-          <Route path="/catalog"     element={<Catalog />} />
-          <Route path="/rankings"    element={<Rankings />} />
-          <Route path="/my-list"     element={<MyList />} />
-          <Route path="/profile"     element={<Profile />} />
-          <Route path="/login"       element={<Login />} />
-          <Route path="/anime/:id"   element={<AnimeDetail />} />
-          <Route path="/manga/:id"   element={<AnimeDetail />} />
-          {/* Ruta 404 */}
+        {/*
+          key={location.pathname} — fuerza re-mount en cada cambio de ruta.
+          Esto dispara la animación page-enter definida en index.css.
+          location.key incluye también navegación hacia atrás/adelante.
+        */}
+        <Routes location={location} key={location.key}>
+          <Route path="/"          element={<Home />} />
+          <Route path="/catalog"   element={<Catalog />} />
+          <Route path="/rankings"  element={<Rankings />} />
+          <Route path="/my-list"   element={<MyList />} />
+          <Route path="/profile"   element={<Profile />} />
+          <Route path="/login"     element={<Login />} />
+          <Route path="/anime/:id" element={<AnimeDetail />} />
+          <Route path="/manga/:id" element={<AnimeDetail />} />
           <Route path="*" element={
-            <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+            <div className="page-enter flex flex-col items-center justify-center min-h-[60vh] gap-4">
               <span className="material-symbols-outlined text-[64px] text-outline">search_off</span>
-              <p className="text-headline-sm text-on-surface-variant">Página no encontrada</p>
+              <p className="text-on-surface-variant"
+                 style={{ fontFamily: 'Bangers, cursive', fontSize: '1.5rem', letterSpacing: '0.05em' }}>
+                Página no encontrada
+              </p>
             </div>
           } />
         </Routes>
       </main>
 
-      {/* Navegación inferior — solo en móvil */}
+      <Footer />
       <BottomNav />
     </div>
   )

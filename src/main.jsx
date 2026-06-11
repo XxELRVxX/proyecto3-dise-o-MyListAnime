@@ -4,6 +4,8 @@ import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { ListProvider } from './context/ListContext'
+import { ContentFilterProvider } from './context/ContentFilterContext'
+import { HomeDataProvider } from './context/HomeDataContext'
 import './index.css'
 import App from './App'
 
@@ -13,7 +15,11 @@ createRoot(document.getElementById('root')).render(
       <ThemeProvider>
         <AuthProvider>
           <ListProvider>
-            <App />
+            <HomeDataProvider>
+            <ContentFilterProvider>
+              <App />
+            </ContentFilterProvider>
+            </HomeDataProvider>
           </ListProvider>
         </AuthProvider>
       </ThemeProvider>
