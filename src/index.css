@@ -804,8 +804,9 @@ h1, h2, h3, .title { font-family: var(--font-title); letter-spacing: 0.04em; }
   background: rgba(240,233,255,0.7);
   backdrop-filter: blur(8px);
   border-radius: 16px;
-  padding: 20px;
+  padding: 16px 12px;          
   margin-bottom: 2.5rem !important;
+  overflow-x: auto;           
 }
 
 .light .section-header h2 {

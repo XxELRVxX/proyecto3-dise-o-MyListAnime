@@ -343,7 +343,7 @@ function EpisodeCard({ item }) {
         />
         <div className="p-3 flex flex-col gap-1 min-w-0" style={{ background: hovered ? 'var(--c-hover-bg)' : '', transition: 'background 0.3s' }}>
           <span className="text-[10px] font-bold tracking-widest uppercase text-primary">
-            {item.episodes ? `${item.episodes} eps` : 'Nuevo'}
+            {item.episodes ? `${item.episodes} eps` : 'New'}
           </span>
           <span className="font-bold text-sm text-on-surface line-clamp-1">{item.title}</span>
           <span className="text-[11px] text-on-surface-variant line-clamp-3 leading-snug">
@@ -605,7 +605,7 @@ export default function Home() {
             <div className="relative z-10 p-8 sm:p-12 max-w-lg flex flex-col gap-4">
               <div className="flex gap-2 flex-wrap">
                 <span className="genre-chip text-primary border-primary/40 bg-primary/10">
-                  EN TENDENCIA #1
+                  TRENDING #1
                 </span>
                 {hero.genres?.[0] && <span className="genre-chip">{hero.genres[0]}</span>}
                 {hero.genres?.[1] && <span className="genre-chip">{hero.genres[1]}</span>}
@@ -656,17 +656,17 @@ export default function Home() {
                     className="material-symbols-outlined text-[18px]"
                     style={{ fontVariationSettings: "'FILL' 1" }}
                   >play_arrow</span>
-                  Ver detalles
+                  View details
                 </Link>
                 {user ? (
                   <button onClick={() => setModal(hero)} className="btn-secondary flex items-center gap-2">
                     <span className="material-symbols-outlined text-[16px]">bookmark_add</span>
-                    Agregar a lista
+                     Add to list
                   </button>
                 ) : (
                   <Link to="/login" className="btn-secondary flex items-center gap-2">
                     <span className="material-symbols-outlined text-[16px]">login</span>
-                    Iniciar sesión
+                    Sign in
                   </Link>
                 )}
               </div>
@@ -680,10 +680,10 @@ export default function Home() {
         <section className="home-section mb-10">
           <SectionHeader
             icon="local_fire_department"
-            title="En Tendencia"
-            subtitle="Lo que la comunidad está viendo esta semana"
+            title="Trending"
+            subtitle="What the community is watching this week"
             linkTo="/catalog"
-            linkLabel="Ver todo"
+            linkLabel="View all"
           />
           {loading ? (
             <>
@@ -715,10 +715,10 @@ export default function Home() {
         <section className="home-section mb-10">
           <SectionHeader
             icon="ac_unit"
-            title="Temporada Actual"
-            subtitle="Anime en emisión ahora mismo"
+            title="Current Season"
+            subtitle="Anime currently airing"
             linkTo="/rankings?type=anime"
-            linkLabel="Ver rankings"
+            linkLabel="View rankings"
           />
           {loading ? (
             <>
@@ -748,14 +748,14 @@ export default function Home() {
                           flex flex-col sm:flex-row items-center justify-between gap-6 mb-6">
             <div>
               <h3 className="text-headline-sm font-bold text-on-surface mb-1">
-                Únete a <span className="text-primary">MyListAnime</span>
+                Join <span className="text-primary">MyListAnime</span>
               </h3>
               <p className="text-body-sm text-on-surface-variant">
-                Guardá tu lista, calificá y seguí tu progreso
+                Save your list, rate and follow your progress
               </p>
             </div>
             <Link to="/login" className="btn-primary whitespace-nowrap">
-              Empezar gratis
+              Start for free
             </Link>
           </div>
         )}
